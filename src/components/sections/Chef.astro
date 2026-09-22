@@ -1,7 +1,7 @@
 ---
 import Media from '@/components/ui/Media.astro';
 
-import chefPortrait from '@/assets/images/chef-portrait.jpg';
+import chefPortrait from '@/assets/images/chef-tweezers.jpg';
 import chefFlames from '@/assets/images/chef-flames.jpg';
 ---
 
@@ -10,16 +10,16 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
     <figure class="chef__portrait media-frame" data-reveal="clip">
       <Media
         src={chefPortrait}
-        alt="Chef Rafael Tanaka de braços cruzados, vestindo dólmã branco e avental cinza"
+        alt="Chef Rafael Amaral finalizando um prato com pinça sob luminárias de cobre"
         sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 86vw"
         widths={[420, 640, 900, 1200]}
-        position="50% 25%"
+        position="50% 30%"
       />
     </figure>
 
     <div class="chef__text">
       <p class="eyebrow" data-reveal>O Chef</p>
-      <blockquote class="chef__quote" data-reveal style="--i: 1">
+      <blockquote class="chef__quote" data-split>
         <p>
           “O fogo não perdoa pressa. Ele ensina a escutar o ingrediente, a esperar o ponto certo e a respeitar quem
           veio antes de nós.”
@@ -27,8 +27,8 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
       </blockquote>
       <div class="chef__bio body-muted" data-reveal style="--i: 2">
         <p>
-          Paulistano, neto de imigrantes japoneses e criado entre a feira da Liberdade e o fogão a lenha da avó em
-          Minas, Rafael Tanaka passou por cozinhas em Lima, San Sebastián e Tóquio antes de abrir o Lume.
+          Nascido em Belo Horizonte e criado entre o fogão a lenha da avó, em Tiradentes, e as feiras de São Paulo,
+          Rafael Amaral passou por cozinhas em Lima, San Sebastián e Copenhague antes de abrir o Lume.
         </p>
         <p>
           À frente de uma brigada de 14 cozinheiros, ele traduz memória afetiva em técnica — sempre a partir do que
@@ -36,7 +36,7 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
         </p>
       </div>
       <footer class="chef__sign" data-reveal style="--i: 3">
-        <h2 id="chef-title" class="chef__name heading">Rafael Tanaka</h2>
+        <h2 id="chef-title" class="chef__name heading">Rafael Amaral</h2>
         <p class="caps">Chef executivo e sócio-fundador</p>
       </footer>
     </div>

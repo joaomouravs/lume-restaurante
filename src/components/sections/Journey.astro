@@ -1,0 +1,493 @@
+---
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { tastingMenu, formatPrice } from '@/data/menu';
+
+const [firstWord, ...rest] = tastingMenu.name.split(' ');
+---
+
+<section id="jornada" class="journey theme-dark texture-ink curve-top overlap-up" aria-labelledby="journey-title">
+  <div class="journey__pin" data-journey>
+    <div class="journey__track" data-journey-track tabindex="0" aria-label="Os sete tempos do Menu Fogo">
+      <div class="journey__intro">
+        <p class="eyebrow" data-reveal>Menu degustação</p>
+        <h2 id="journey-title" class="heading journey__title" data-split>
+          A jornada do {firstWord} <em>{rest.join(' ')}</em>
+        </h2>
+        <p class="body-muted journey__lead" data-reveal>{tastingMenu.description}</p>
+        <dl class="journey__facts" data-reveal>
+          <div><dt class="caps">Tempos</dt><dd>{tastingMenu.courses}</dd></div>
+          <div><dt class="caps">Duração</dt><dd>{tastingMenu.duration}</dd></div>
+          <div><dt class="caps">Por pessoa</dt><dd>R$ {formatPrice(tastingMenu.price)}</dd></div>
+        </dl>
+        <a href="/reservas?experiencia=degustacao" class="btn btn--brass" data-reveal>
+          Reservar o {tastingMenu.name}
+          <span class="btn__icon"><Icon name="arrow-up-right" size={16} /></span>
+        </a>
+        <p class="journey__hint caps" aria-hidden="true">
+          <span class="journey__hint-desktop">Role para percorrer os sete tempos</span>
+          <span class="journey__hint-touch">Deslize para percorrer os sete tempos</span>
+          <Icon name="arrow-right" size={16} />
+        </p>
+      </div>
+
+      <ol class="journey__steps" role="list">
+        {
+          tastingMenu.steps.map((step, i) => (
+            <li class="journey__step" data-journey-step={i} style={`--i: ${i}`}>
+              <article aria-labelledby={`tempo-${i + 1}`}>
+                <div class="journey__img">
+                  <div class="journey__img-inner" data-journey-img>
+                    <Media
+                      src={step.image}
+                      alt={step.imageAlt}
+                      sizes="(min-width: 1024px) 26vw, 72vw"
+                      widths={[360, 540, 720, 960]}
+                    />
+                  </div>
+                  <span class="journey__num" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                </div>
+                <div class="journey__info">
+                  <p class="journey__origin caps">
+                    <span class="journey__dot" aria-hidden="true" />
+                    {step.origin}
+                  </p>
+                  <h3 id={`tempo-${i + 1}`} class="journey__name heading">
+                    <span class="visually-hidden">Tempo {i + 1}: </span>
+                    {step.title}
+                  </h3>
+                  <p class="journey__desc">{step.description}</p>
+                  <p class="journey__ingredient">
+                    <Icon name="leaf" size={14} /> {step.ingredient}
+                  </p>
+                </div>
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="journey__outro">
+        <p class="journey__outro-text heading">
+          Harmonização opcional com vinhos de pequenos produtores, <em>tempo a tempo</em>.
+        </p>
+        <p class="journey__outro-price caps">+ R$ {formatPrice(tastingMenu.pairing)} por pessoa</p>
+        <a href="/cardapio#degustacao" class="link">Ver detalhes do menu <Icon name="arrow-right" size={16} /></a>
+      </div>
+    </div>
+
+    <nav class="journey__progress" aria-label="Ir para um tempo do menu">
+      <span class="journey__bar" aria-hidden="true"><span data-journey-bar></span></span>
+      <ol role="list">
+        {
+          tastingMenu.steps.map((step, i) => (
+            <li>
+              <button type="button" data-journey-goto={i} aria-label={`Tempo ${i + 1}: ${step.title}`}>
+                {String(i + 1).padStart(2, '0')}
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<style>
+  .journey {
+    position: relative;
+    z-index: 2;
+    padding-top: var(--curve);
+    color: var(--paper-100);
+  }
+
+  .journey__pin {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+    padding-block: calc(var(--header-h) + 1rem) 1.5rem;
+    overflow: hidden;
+  }
+
+  /* ---------- Trilho (padrão: rolagem nativa horizontal) ---------- */
+  .journey__track {
+    --step-w: clamp(260px, 72vw, 380px);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .journey__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .journey__track:focus-visible {
+    outline-offset: -4px;
+  }
+
+  /* Com GSAP no desktop, o trilho é movido pela rolagem vertical */
+  :global(.has-motion) .journey__pin:has(.is-pinned) {
+    height: 100svh;
+    min-height: 0;
+    padding-block: calc(var(--header-h) + 0.25rem) 1.25rem;
+  }
+
+  :global(.has-motion) .journey__track.is-pinned {
+    flex: 1;
+    min-height: 0;
+    overflow: visible;
+    scroll-snap-type: none;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .journey__intro {
+    flex: none;
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    width: min(34rem, 82vw);
+    scroll-snap-align: start;
+  }
+
+  .journey__title {
+    font-size: var(--step-6);
+    line-height: 0.98;
+  }
+
+  .journey__lead {
+    max-width: 40ch;
+  }
+
+  .journey__facts {
+    display: flex;
+    gap: var(--space-l);
+    margin: var(--space-s) 0;
+  }
+
+  .journey__facts dt {
+    color: var(--brass-400);
+  }
+
+  .journey__facts dd {
+    margin: 0.3rem 0 0;
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1;
+  }
+
+  .journey__hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: var(--space-m);
+    color: var(--stone-400);
+  }
+
+  .journey__hint :global(svg) {
+    animation: nudge 1.8s var(--ease-in-out) infinite;
+  }
+
+  @keyframes nudge {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(6px); }
+  }
+
+  .journey__hint-desktop {
+    display: none;
+  }
+
+  :global(.has-motion) .journey__track.is-pinned .journey__hint-desktop {
+    display: inline;
+  }
+
+  :global(.has-motion) .journey__track.is-pinned .journey__hint-touch {
+    display: none;
+  }
+
+  .journey__steps {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    margin: 0;
+  }
+
+  /* Linha da "rota" que atravessa os tempos, por trás das fotos */
+  .journey__steps::before {
+    content: '';
+    position: absolute;
+    left: -3rem;
+    right: -3rem;
+    top: 38%;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, rgb(207 174 124 / 0.35) 0 6px, transparent 6px 14px);
+    pointer-events: none;
+  }
+
+  .journey__step {
+    position: relative;
+    flex: none;
+    width: var(--step-w);
+    scroll-snap-align: center;
+  }
+
+  .journey__step:nth-child(even) {
+    padding-top: clamp(0rem, 8vh, 6rem);
+  }
+
+  .journey__step:nth-child(odd) {
+    padding-bottom: clamp(0rem, 8vh, 6rem);
+  }
+
+  .journey__step article {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .journey__img {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    max-height: 52vh;
+    width: 100%;
+    border-radius: 999px 999px var(--radius-m) var(--radius-m);
+    overflow: hidden;
+    background: var(--ink-800);
+  }
+
+  .journey__step:nth-child(3n + 2) .journey__img {
+    border-radius: var(--radius-m);
+  }
+
+  .journey__img-inner {
+    position: absolute;
+    inset: 0 -12%;
+  }
+
+  .journey__img-inner :global(picture),
+  .journey__img-inner :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .journey__num {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 2rem + 4vw, 6rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(243 238 230 / 0.75);
+  }
+
+  .journey__info {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .journey__origin {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--brass-400);
+  }
+
+  .journey__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--brass-400);
+    box-shadow: 0 0 0 4px rgb(207 174 124 / 0.18);
+  }
+
+  .journey__name {
+    font-size: var(--step-3);
+    line-height: 1.08;
+  }
+
+  .journey__desc {
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  .journey__ingredient {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    justify-self: start;
+    margin-top: 0.25rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    font-size: var(--step--2);
+    font-weight: 600;
+    color: var(--brass-300);
+  }
+
+  .journey__outro {
+    flex: none;
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    width: min(26rem, 78vw);
+    padding-right: var(--gutter);
+    scroll-snap-align: end;
+  }
+
+  .journey__outro-text {
+    font-size: var(--step-4);
+    line-height: 1.1;
+  }
+
+  .journey__outro-price {
+    color: var(--brass-400);
+  }
+
+  /* ---------- Progresso / navegação por tempo ---------- */
+  .journey__progress {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    width: min(100% - var(--gutter) * 2, var(--container));
+    margin: clamp(1.5rem, 4vh, 3rem) auto 0;
+  }
+
+  .journey__bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--color-line);
+  }
+
+  .journey__bar span {
+    position: absolute;
+    inset: 0;
+    background: var(--brass-400);
+    transform-origin: left;
+    transform: scaleX(var(--p, 0));
+  }
+
+  .journey__progress ol {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+  }
+
+  .journey__progress button {
+    display: grid;
+    place-items: center;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    padding-inline: 0.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    background: var(--ink-900);
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--stone-400);
+    transition:
+      background var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out);
+  }
+
+  .journey__progress button:hover {
+    color: var(--paper-100);
+    border-color: var(--paper-100);
+  }
+
+  .journey__progress button[aria-current='step'] {
+    background: var(--brass-400);
+    border-color: var(--brass-400);
+    color: var(--ink-950);
+  }
+
+  @media (min-width: 1024px) {
+    .journey__track {
+      --step-w: clamp(260px, min(24vw, 44vh), 380px);
+    }
+
+    .journey__img {
+      max-height: 46vh;
+    }
+
+    .journey__step:nth-child(even) {
+      padding-top: 5vh;
+    }
+
+    .journey__step:nth-child(odd) {
+      padding-bottom: 5vh;
+    }
+
+    .journey__progress {
+      margin-top: 1rem;
+    }
+
+    .journey__intro {
+      width: min(36rem, 38vw);
+      padding-left: max(0px, (100vw - var(--container)) / 2 - var(--gutter));
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .journey__pin {
+      min-height: 0;
+      padding-block: var(--section-y) var(--space-2xl);
+    }
+
+    .journey__track {
+      align-items: flex-start;
+    }
+
+    .journey__steps::before {
+      display: none;
+    }
+
+    .journey__step:nth-child(n) {
+      padding: 0;
+    }
+
+    .journey__progress {
+      margin-top: var(--space-l);
+    }
+  }
+
+  @media (max-width: 639px) {
+    .journey__intro {
+      width: 84vw;
+    }
+
+    .journey__title {
+      font-size: var(--step-5);
+    }
+
+    .journey__progress button {
+      min-width: 2.4rem;
+      height: 2.4rem;
+      padding-inline: 0.25rem;
+    }
+  }
+</style>
+
+<script>
+  import { initJourney } from '@/scripts/journey';
+  initJourney();
+</script>

@@ -1,4 +1,5 @@
 ---
+import { getImage } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/sections/PageHero.astro';
 import ReserveBand from '@/components/sections/ReserveBand.astro';
@@ -8,7 +9,12 @@ import Icon from '@/components/ui/Icon.astro';
 import { menu, tastingMenu, dietLabels, formatPrice, type DietTag } from '@/data/menu';
 
 import heroImage from '@/assets/images/dish-ragu.jpg';
-import tastingImage from '@/assets/images/chef-pass.jpg';
+import tastingImage from '@/assets/images/chef-pass-dark.jpg';
+
+// Miniaturas para a foto que acompanha o cursor na lista do Menu Fogo
+const stepThumbs = await Promise.all(
+  tastingMenu.steps.map((s) => getImage({ src: s.image, width: 540, format: 'webp', quality: 72 })),
+);
 
 const filters: { id: DietTag | 'all'; label: string }[] = [
   { id: 'all', label: 'Todos' },
@@ -70,7 +76,7 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
                   <span class="eyebrow__index">{String(ci + 1).padStart(2, '0')}</span>
                   {cat.kicker}
                 </p>
-                <h2 id={`${cat.id}-title`} class="heading h-l" data-reveal style="--i: 1">
+                <h2 id={`${cat.id}-title`} class="heading h-l" data-split>
                   {cat.title}
                 </h2>
                 <figure class="menu-cat__cover" data-reveal="clip">
@@ -110,7 +116,7 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
       <div class="container tasting__grid">
         <div class="tasting__intro">
           <p class="eyebrow" data-reveal>Menu degustação</p>
-          <h2 id="tasting-title" class="heading h-xl" data-reveal style="--i: 1">
+          <h2 id="tasting-title" class="heading h-xl" data-split>
             {tastingMenu.name.split(' ')[0]} <em>{tastingMenu.name.split(' ')[1]}</em>
           </h2>
           <p class="body-muted" data-reveal style="--i: 2">{tastingMenu.description}</p>
@@ -144,7 +150,7 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
           <figure class="tasting__img" data-reveal="clip">
             <Media
               src={tastingImage}
-              alt="Chef empratando vários pratos do menu degustação no passe da cozinha"
+              alt="Cozinheira finalizando pratos do menu degustação no passe da cozinha"
               sizes="(min-width: 1024px) 40vw, 90vw"
               widths={[480, 720, 960, 1200]}
             />
@@ -152,9 +158,12 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
           <ol role="list" class="tasting__list">
             {
               tastingMenu.steps.map((step, i) => (
-                <li data-reveal style={`--i: ${i}`}>
+                <li data-reveal style={`--i: ${i}`} data-cursor-src={stepThumbs[i].src}>
                   <span class="tasting__num">{String(i + 1).padStart(2, '0')}</span>
-                  <span>{step}</span>
+                  <span class="tasting__step">
+                    <span class="tasting__title">{step.title}</span>
+                    <span class="tasting__origin">{step.origin} · {step.ingredient}</span>
+                  </span>
                 </li>
               ))
             }
@@ -437,6 +446,19 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
     font-family: var(--font-display);
     font-size: var(--step-2);
     line-height: 1.25;
+  }
+
+  .tasting__step {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .tasting__origin {
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stone-400);
   }
 
   .tasting__num {
