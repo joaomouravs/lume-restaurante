@@ -111,6 +111,47 @@ p {
   border-radius: 2px;
 }
 
+/* Rolagem suave (Lenis) substitui o scroll-behavior nativo */
+html.has-motion {
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* Máscara de linha dos títulos divididos (SplitText): não corta descendentes */
+.split-mask {
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+/* Grão de filme sobre todo o site: unifica fotos, vídeo e texturas */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  z-index: calc(var(--z-modal) + 2);
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
 /* Transições nativas entre páginas (progressive enhancement) */
 @view-transition {
   navigation: auto;

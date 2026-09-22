@@ -4,15 +4,15 @@ import Icon from '@/components/ui/Icon.astro';
 import { stats } from '@/data/content';
 import { site } from '@/data/site';
 
-import fireGrill from '@/assets/images/fire-grill.jpg';
-import tableSetting from '@/assets/images/table-setting.jpg';
+import brasaGrill from '@/assets/images/brasa-grill.jpg';
+import tableWine from '@/assets/images/table-wine.jpg';
 ---
 
 <section id="a-casa" class="about section texture-ink theme-dark curve-bottom" aria-labelledby="about-title">
   <div class="container">
     <header class="about__header">
       <p class="eyebrow eyebrow--center" data-reveal>A Casa</p>
-      <h2 id="about-title" class="about__statement heading" data-reveal style="--i: 1">
+      <h2 id="about-title" class="about__statement heading" data-split>
         Uma cozinha guiada pelo <em>fogo</em>, pelas estações e pelo respeito a quem planta o que servimos.
       </h2>
     </header>
@@ -20,8 +20,8 @@ import tableSetting from '@/assets/images/table-setting.jpg';
     <div class="about__body">
       <figure class="about__img about__img--small media-frame" data-reveal="clip">
         <Media
-          src={tableSetting}
-          alt="Taças de cristal e pratos em mesa posta de madeira"
+          src={tableWine}
+          alt="Garrafa de vinho e taças em mesa posta sob luz quente"
           sizes="(min-width: 1024px) 20vw, 42vw"
           widths={[360, 540, 720]}
         />
@@ -29,8 +29,8 @@ import tableSetting from '@/assets/images/table-setting.jpg';
 
       <figure class="about__img about__img--tall media-frame" data-reveal="clip" style="--i: 1">
         <Media
-          src={fireGrill}
-          alt="Corte de carne sendo virado sobre a brasa com uma pinça"
+          src={brasaGrill}
+          alt="Costela assando sobre a grelha, com a brasa viva por baixo"
           sizes="(min-width: 1024px) 30vw, 50vw"
           widths={[480, 720, 960, 1200]}
         />

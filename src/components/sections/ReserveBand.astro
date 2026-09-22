@@ -3,20 +3,20 @@ import Media from '@/components/ui/Media.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { site } from '@/data/site';
 
-import roomDining from '@/assets/images/room-dining.jpg';
+import heroInterior from '@/assets/images/hero-interior.jpg';
 
 const times = ['12h30', '13h00', '13h30', '19h00', '19h30', '20h00', '20h30', '21h00', '21h30', '22h00'];
 ---
 
 <section class="reserve-band theme-dark" aria-labelledby="reserve-band-title">
   <div class="reserve-band__bg" aria-hidden="true">
-    <Media src={roomDining} alt="" sizes="100vw" widths={[768, 1280, 1920]} />
+    <Media src={heroInterior} alt="" sizes="100vw" widths={[768, 1280, 1920]} position="50% 65%" />
   </div>
 
   <div class="container reserve-band__inner">
     <div class="reserve-band__copy">
       <p class="eyebrow" data-reveal>Reservas</p>
-      <h2 id="reserve-band-title" class="heading h-xl" data-reveal style="--i: 1">
+      <h2 id="reserve-band-title" class="heading h-xl" data-split>
         Reserve a sua <em>noite</em>
       </h2>
       <p class="body-muted" data-reveal style="--i: 2">

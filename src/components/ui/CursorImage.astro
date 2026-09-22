@@ -1,0 +1,65 @@
+---
+/**
+ * Imagem que acompanha o cursor sobre itens [data-cursor-src] (listas de cardápio).
+ * Puramente decorativa: o conteúdo continua acessível no texto de cada item.
+ */
+---
+
+<div class="cursor-img" data-cursor-img aria-hidden="true">
+  <div class="cursor-img__frame">
+    <img alt="" decoding="async" data-cursor-img-el />
+  </div>
+</div>
+
+<style>
+  .cursor-img {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 45;
+    width: clamp(200px, 17vw, 270px);
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .cursor-img__frame {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-m);
+    background: var(--ink-800);
+    box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.5);
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity 350ms var(--ease-out),
+      transform 600ms var(--ease-out),
+      border-radius 400ms var(--ease-out);
+  }
+
+  .cursor-img.is-visible .cursor-img__frame {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .cursor-img.is-cutout .cursor-img__frame {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  .cursor-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 250ms var(--ease-out);
+  }
+
+  .cursor-img img.is-swapping {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  import { initCursorImage } from '@/scripts/cursor-image';
+  initCursorImage();
+</script>

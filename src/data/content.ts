@@ -8,11 +8,11 @@ import roomWarm from '@/assets/images/room-warm.jpg';
 import roomBar from '@/assets/images/room-bar.jpg';
 import roomBarLights from '@/assets/images/room-bar-lights.jpg';
 import roomTable from '@/assets/images/room-table.jpg';
-import roomModern from '@/assets/images/room-modern.jpg';
-import tableSetting from '@/assets/images/table-setting.jpg';
-import fireGrill from '@/assets/images/fire-grill.jpg';
+import roomDining from '@/assets/images/room-dining.jpg';
+import tableWine from '@/assets/images/table-wine.jpg';
+import brasaGrill from '@/assets/images/brasa-grill.jpg';
 import wineGrapes from '@/assets/images/wine-grapes.jpg';
-import wineToast from '@/assets/images/wine-toast.jpg';
+import dinnerToast from '@/assets/images/dinner-toast.jpg';
 import drinkNegroni from '@/assets/images/drink-negroni.jpg';
 
 export type Experience = {
@@ -62,8 +62,8 @@ export const experiences: Experience[] = [
     meta: ['Até 24 pessoas', 'Salão reservado', 'Menu sob medida'],
     description:
       'Jantares de celebração, encontros corporativos e lançamentos em um salão reservado, com menu desenhado junto ao chef.',
-    image: wineToast,
-    imageAlt: 'Convidados brindando com taças de vinho tinto',
+    image: dinnerToast,
+    imageAlt: 'Convidados brindando à mesa em um jantar à luz de velas',
     cta: { label: 'Solicitar proposta', href: '/reservas?experiencia=eventos' },
   },
 ];
@@ -105,12 +105,12 @@ export type GalleryItem = { image: ImageMetadata; alt: string; caption: string; 
 
 export const gallery: GalleryItem[] = [
   { image: roomWarm, alt: 'Salão principal com luz quente e mesas postas', caption: 'Salão principal', layout: 'tall' },
-  { image: fireGrill, alt: 'Carne sendo virada sobre a brasa com pinça', caption: 'A brasa', layout: 'wide' },
+  { image: brasaGrill, alt: 'Costela assando sobre a grelha com a brasa viva por baixo', caption: 'A brasa', layout: 'wide' },
   { image: drinkNegroni, alt: 'Coquetel âmbar com gelo no balcão', caption: 'Bar de coquetelaria', layout: 'square' },
-  { image: tableSetting, alt: 'Taças e pratos em mesa posta de madeira', caption: 'Mesa posta', layout: 'square' },
+  { image: tableWine, alt: 'Garrafa de vinho e taças em mesa posta sob luz quente', caption: 'Mesa posta', layout: 'square' },
   { image: roomBarLights, alt: 'Bar iluminado por dezenas de lâmpadas pendentes', caption: 'O bar', layout: 'tall' },
   { image: wineGrapes, alt: 'Taça de vinho tinto ao lado de cachos de uva', caption: 'Adega', layout: 'square' },
-  { image: roomModern, alt: 'Salão contemporâneo com cadeiras escuras e piso de madeira', caption: 'Mezanino', layout: 'wide' },
+  { image: roomDining, alt: 'Cliente servindo-se à mesa em ambiente de luz baixa', caption: 'À mesa', layout: 'wide' },
   { image: chefKitchen, alt: 'Cozinheiro finalizando pratos na cozinha aberta', caption: 'Cozinha aberta', layout: 'square' },
   { image: roomBar, alt: 'Balcão de bar com prateleiras de garrafas', caption: 'Balcão', layout: 'square' },
   { image: roomTable, alt: 'Prato servido em mesa com taças de cristal', caption: 'Serviço', layout: 'wide' },

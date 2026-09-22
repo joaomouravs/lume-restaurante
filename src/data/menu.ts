@@ -15,6 +15,10 @@ import drinkNegroni from '@/assets/images/drink-negroni.jpg';
 import drinkBotanical from '@/assets/images/drink-botanical.jpg';
 import drinkPour from '@/assets/images/drink-pour.jpg';
 import drinkMartini from '@/assets/images/drink-martini.jpg';
+import bread from '@/assets/images/bread.jpg';
+import soupDark from '@/assets/images/soup-dark.jpg';
+import fishBroth from '@/assets/images/fish-broth.jpg';
+import cacaoBundt from '@/assets/images/cacao-bundt.jpg';
 
 export type DietTag = 'veg' | 'sg' | 'sl';
 
@@ -238,23 +242,83 @@ export const menu: MenuCategory[] = [
   },
 ];
 
+export type TastingStep = {
+  title: string;
+  description: string;
+  origin: string; // região / bioma de onde vem o ingrediente principal
+  ingredient: string;
+  image: ImageMetadata;
+  imageAlt: string;
+};
+
+const tastingSteps: TastingStep[] = [
+  {
+    title: 'Pão de fermentação natural',
+    description: 'Fermentação de 48 horas, manteiga de garrafa defumada na brasa e flor de sal.',
+    origin: 'Serra da Mantiqueira · MG',
+    ingredient: 'Manteiga de garrafa',
+    image: bread,
+    imageAlt: 'Pães rústicos de fermentação natural com ramos de trigo',
+  },
+  {
+    title: 'Figos na brasa',
+    description: 'Burrata, mel de jataí e castanha de baru tostada.',
+    origin: 'Cerrado · GO',
+    ingredient: 'Mel de jataí',
+    image: dishFigs,
+    imageAlt: 'Figos assados com frutas vermelhas em prato branco',
+  },
+  {
+    title: 'Caldo de abóbora cabotiá',
+    description: 'Abóbora assada nas cinzas, coalhada de cabra e óleo de ervas da horta.',
+    origin: 'Mata Atlântica · SP',
+    ingredient: 'Abóbora cabotiá',
+    image: soupDark,
+    imageAlt: 'Caldo cremoso de abóbora com ervas em tigela escura',
+  },
+  {
+    title: 'Peixe da costa, tucupi e jambu',
+    description: 'Peixe do dia selado na folha de bananeira, caldo de tucupi negro e jambu.',
+    origin: 'Amazônia · PA',
+    ingredient: 'Tucupi negro',
+    image: fishBroth,
+    imageAlt: 'Peixe servido em caldo dourado dentro de tigela metálica',
+  },
+  {
+    title: 'Ancho maturado 45 dias',
+    description: 'Assado na lenha de laranjeira, farofa de tutano e chimichurri de ervas.',
+    origin: 'Pampa · RS',
+    ingredient: 'Gado de pasto',
+    image: dishAncho,
+    imageAlt: 'Ancho fatiado ao ponto sobre tábua escura',
+  },
+  {
+    title: 'Pré-sobremesa de cambuci',
+    description: 'Pão de ló leve, sorbet de cambuci e frutas vermelhas da estação.',
+    origin: 'Mata Atlântica · SP',
+    ingredient: 'Cambuci',
+    image: dessertBerries,
+    imageAlt: 'Fatia de pão de ló com framboesas frescas',
+  },
+  {
+    title: 'Cacau 70% da Bahia',
+    description: 'Bolo úmido de cacau fino, calda quente e sorvete de baunilha do cerrado.',
+    origin: 'Sul da Bahia · BA',
+    ingredient: 'Cacau cabruca',
+    image: cacaoBundt,
+    imageAlt: 'Bolo de chocolate com calda escorrendo sobre fundo escuro',
+  },
+];
+
 export const tastingMenu = {
   name: 'Menu Fogo',
-  courses: 7,
+  courses: tastingSteps.length,
   price: 420,
   pairing: 290,
   duration: '2h30',
   description:
     'Uma travessia pelos biomas brasileiros em sete tempos, conduzida pela brasa e pela estação. Servido de terça a sábado, exclusivamente no jantar.',
-  steps: [
-    'Couvert de fermentação natural',
-    'Ostras de Florianópolis, leite de tigre de caju',
-    'Pupunha na brasa, beurre blanc de maracujá',
-    'Peixe da costa, tucupi e jambu',
-    'Ancho maturado 45 dias, tutano e chimichurri',
-    'Pré-sobremesa de cambuci',
-    'Cacau 70% da Bahia',
-  ],
+  steps: tastingSteps,
 };
 
 export const formatPrice = (value: number) =>

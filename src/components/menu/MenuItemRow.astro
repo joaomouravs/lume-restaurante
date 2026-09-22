@@ -3,6 +3,7 @@
  * Linha de cardápio: nome ···· preço, descrição e selos alimentares.
  * Reutilizada na prévia da home e na página de cardápio.
  */
+import { getImage } from 'astro:assets';
 import { dietLabels, formatPrice, type MenuItem } from '@/data/menu';
 
 interface Props {
@@ -11,9 +12,20 @@ interface Props {
 }
 
 const { item, headingLevel: Heading = 'h3' } = Astro.props;
+
+// Miniatura para a foto que acompanha o cursor (carregada só no hover)
+const isCutout = item.image?.format === 'png';
+const thumb = item.image
+  ? await getImage({ src: item.image, width: 540, format: 'webp', quality: 72 })
+  : undefined;
 ---
 
-<article class="menu-row" data-tags={(item.tags ?? []).join(' ')}>
+<article
+  class="menu-row"
+  data-tags={(item.tags ?? []).join(' ')}
+  data-cursor-src={thumb?.src}
+  data-cursor-cutout={isCutout ? '' : undefined}
+>
   <div class="menu-row__top">
     <Heading class="menu-row__name">
       {item.name}
