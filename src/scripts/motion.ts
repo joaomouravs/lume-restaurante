@@ -51,9 +51,28 @@ export function initMotion() {
   window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
 }
 
+/**
+ * Pontuação logo após um elemento (ex.: `<em>fogo</em>,`) viraria uma "palavra"
+ * separada e poderia quebrar sozinha no início da linha. Move a pontuação
+ * para dentro do elemento anterior antes de dividir o título.
+ */
+function gluePunctuation(root: HTMLElement) {
+  root.querySelectorAll('*').forEach((el) => {
+    const next = el.nextSibling;
+    if (next?.nodeType !== Node.TEXT_NODE) return;
+    const match = next.textContent?.match(/^[,.;:!?…)»”]+/);
+    if (!match) return;
+    el.append(match[0]);
+    next.textContent = next.textContent!.slice(match[0].length);
+  });
+  // Une nós de texto adjacentes ("fogo" + ",") para formarem uma única palavra
+  root.normalize();
+}
+
 /** Títulos que sobem palavra por palavra, de dentro de uma máscara por linha */
 function splitHeadings() {
   document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
+    gluePunctuation(el);
     SplitText.create(el, {
       type: 'lines,words',
       mask: 'lines',

@@ -6,6 +6,7 @@ import { getImage } from 'astro:assets';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import CursorImage from '@/components/ui/CursorImage.astro';
+import FloatingReserve from '@/components/ui/FloatingReserve.astro';
 import { site, schedule } from '@/data/site';
 
 import cormorantLatin from '@fontsource-variable/cormorant/files/cormorant-latin-wght-normal.woff2?url';
@@ -18,6 +19,8 @@ interface Props {
   ogImage?: ImageMetadata;
   headerVariant?: 'split' | 'dark';
   noindex?: boolean;
+  /** Botão flutuante de reserva no celular (desligado na própria página de reservas) */
+  floatingCta?: boolean;
 }
 
 const {
@@ -26,6 +29,7 @@ const {
   ogImage = ogDefault,
   headerVariant = 'dark',
   noindex = false,
+  floatingCta = true,
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${site.fullName}` : `${site.fullName} · Restaurante em São Paulo`;
@@ -124,12 +128,15 @@ const jsonLd = {
     </main>
     <Footer />
     <CursorImage />
+    {floatingCta && <FloatingReserve />}
 
     <script>
       import { initReveal } from '@/scripts/reveal';
       import { initMotion } from '@/scripts/motion';
+      import { initScrollFade } from '@/scripts/scroll-fade';
       initReveal();
       initMotion();
+      initScrollFade();
     </script>
   </body>
 </html>

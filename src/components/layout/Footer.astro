@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
 const socialIcons = { Instagram: 'instagram', Spotify: 'spotify', TripAdvisor: 'tripadvisor' } as const;
 ---
 
-<footer class="footer texture-ink theme-dark" aria-labelledby="footer-title">
+<footer class="footer texture-ink theme-dark" aria-labelledby="footer-title" data-no-float-cta>
   <h2 id="footer-title" class="visually-hidden">Rodapé</h2>
 
   <div class="container footer__top">
@@ -347,6 +347,25 @@ const socialIcons = { Instagram: 'instagram', Spotify: 'spotify', TripAdvisor: '
 
     .footer__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Telas de toque: links com área mínima de 44px */
+  @media (pointer: coarse) {
+    .footer__list {
+      gap: 0;
+    }
+
+    .footer__list a,
+    .footer__address a,
+    .footer__top-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+    }
+
+    .footer__address a {
+      padding-block: 0.4rem;
     }
   }
 

@@ -131,6 +131,20 @@ html.lenis body {
   margin-bottom: -0.12em;
 }
 
+/* Barras com rolagem horizontal: esmaece a borda direita para indicar que há mais itens */
+@media (max-width: 1023px) {
+  .scroll-fade {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+    padding-right: 3rem;
+  }
+
+  .scroll-fade.is-end {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 /* Grão de filme sobre todo o site: unifica fotos, vídeo e texturas */
 body::after {
   content: '';
@@ -445,6 +459,15 @@ body::after {
 
 .link svg {
   transition: transform var(--dur-base) var(--ease-out);
+}
+
+/* Toque: amplia a área clicável dos links de texto sem alterar o layout */
+@media (pointer: coarse) {
+  .link::before {
+    content: '';
+    position: absolute;
+    inset: -0.65rem -0.35rem;
+  }
 }
 
 .link:hover svg,

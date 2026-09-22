@@ -37,7 +37,7 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
 
   <div class="menu-bar" data-menu-bar>
     <div class="container menu-bar__inner">
-      <nav class="menu-bar__nav" aria-label="Categorias do cardápio">
+      <nav class="menu-bar__nav scroll-fade" aria-label="Categorias do cardápio">
         <ul role="list">
           {
             menu.map((cat) => (
@@ -52,7 +52,7 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
         </ul>
       </nav>
 
-      <div class="menu-bar__filters" role="group" aria-label="Filtrar por restrição alimentar">
+      <div class="menu-bar__filters scroll-fade" role="group" aria-label="Filtrar por restrição alimentar">
         {
           filters.map((f, i) => (
             <button type="button" class="chip" aria-pressed={i === 0 ? 'true' : 'false'} data-filter={f.id}>
@@ -112,7 +112,7 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
       ))
     }
 
-    <section id="degustacao" class="tasting theme-dark texture-ink" aria-labelledby="tasting-title" data-spy="degustacao">
+    <section id="degustacao" class="tasting theme-dark texture-ink" aria-labelledby="tasting-title" data-spy="degustacao" data-no-float-cta>
       <div class="container tasting__grid">
         <div class="tasting__intro">
           <p class="eyebrow" data-reveal>Menu degustação</p>
@@ -286,6 +286,16 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
   .chip:hover {
     border-color: var(--color-fg);
     color: var(--color-fg);
+  }
+
+  @media (pointer: coarse) {
+    .menu-bar__nav a {
+      padding-block: 0.75rem;
+    }
+
+    .chip {
+      min-height: 2.75rem;
+    }
   }
 
   .chip[aria-pressed='true'] {
