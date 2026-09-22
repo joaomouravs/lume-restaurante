@@ -1,0 +1,935 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/sections/PageHero.astro';
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { schedule, site, formatShift } from '@/data/site';
+import { tastingMenu, formatPrice } from '@/data/menu';
+
+import heroImage from '@/assets/images/room-table.jpg';
+import asideImage from '@/assets/images/drink-negroni.jpg';
+
+const experienceOptions = [
+  { id: 'carta', title: 'À la carte', meta: 'Cardápio da estação', icon: 'leaf' },
+  { id: 'degustacao', title: tastingMenu.name, meta: `${tastingMenu.courses} tempos · R$ ${formatPrice(tastingMenu.price)}`, icon: 'flame' },
+  { id: 'mesa-do-chef', title: 'Mesa do Chef', meta: 'Balcão · sex e sáb', icon: 'users' },
+  { id: 'eventos', title: 'Evento privado', meta: 'A partir de 10 pessoas', icon: 'wine' },
+] as const;
+
+const occasions = ['Sem ocasião especial', 'Aniversário', 'Aniversário de casamento', 'Pedido de casamento', 'Negócios', 'Celebração'];
+const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, shifts })));
+---
+
+<BaseLayout
+  title="Reservas"
+  description="Reserve sua mesa no Lume: jantar à la carte, Menu Fogo degustação, Mesa do Chef ou eventos privados nos Jardins, em São Paulo."
+  ogImage={heroImage}
+>
+  <PageHero eyebrow="Jantar · Almoço · Experiências" image={heroImage} breadcrumb="Reservas" compact>
+    Reserve sua <em>mesa</em>
+    <p slot="intro">Três passos rápidos. Confirmamos por e-mail e WhatsApp em até duas horas.</p>
+  </PageHero>
+
+  <section class="reserve section" aria-label="Formulário de reserva">
+    <div class="container reserve__grid">
+      <div class="reserve__main">
+        <ol class="steps" role="list" aria-label="Etapas da reserva" data-steps>
+          <li class="steps__item is-current" data-step-indicator="1" aria-current="step">
+            <span class="steps__num">1</span><span class="steps__label">Sua mesa</span>
+          </li>
+          <li class="steps__item" data-step-indicator="2">
+            <span class="steps__num">2</span><span class="steps__label">Seus dados</span>
+          </li>
+          <li class="steps__item" data-step-indicator="3">
+            <span class="steps__num">3</span><span class="steps__label">Confirmação</span>
+          </li>
+        </ol>
+
+        <form class="rform" novalidate data-reserve-form data-schedule={scheduleJson}>
+          <!-- Etapa 1 -->
+          <fieldset class="rform__step" data-step="1">
+            <legend class="rform__legend heading h-s" tabindex="-1">Escolha a experiência e o horário</legend>
+
+            <div class="rform__group">
+              <p class="rform__label" id="exp-label">Experiência</p>
+              <div class="exp-options" role="radiogroup" aria-labelledby="exp-label">
+                {
+                  experienceOptions.map((opt, i) => (
+                    <label class="exp-option">
+                      <input type="radio" name="experiencia" value={opt.id} checked={i === 0} />
+                      <span class="exp-option__box">
+                        <Icon name={opt.icon} size={22} />
+                        <span class="exp-option__title">{opt.title}</span>
+                        <span class="exp-option__meta">{opt.meta}</span>
+                      </span>
+                    </label>
+                  ))
+                }
+              </div>
+            </div>
+
+            <div class="rform__row">
+              <div class="rform__field">
+                <label for="r-date" class="rform__label">Data</label>
+                <input id="r-date" name="data" type="date" required aria-describedby="r-date-error" />
+                <p class="rform__error" id="r-date-error" data-error-for="data"></p>
+              </div>
+
+              <div class="rform__field">
+                <span class="rform__label" id="guests-label">Pessoas</span>
+                <div class="stepper" role="group" aria-labelledby="guests-label">
+                  <button type="button" class="stepper__btn" data-guests="-1" aria-label="Remover uma pessoa">
+                    <Icon name="minus" size={18} />
+                  </button>
+                  <input
+                    id="r-guests"
+                    name="pessoas"
+                    type="number"
+                    inputmode="numeric"
+                    min="1"
+                    max="24"
+                    value="2"
+                    aria-labelledby="guests-label"
+                    aria-describedby="guests-hint"
+                  />
+                  <button type="button" class="stepper__btn" data-guests="1" aria-label="Adicionar uma pessoa">
+                    <Icon name="plus" size={18} />
+                  </button>
+                </div>
+                <p class="rform__hint" id="guests-hint">Grupos acima de 8 pessoas: sugerimos o salão privativo.</p>
+              </div>
+            </div>
+
+            <div class="rform__group">
+              <p class="rform__label" id="time-label">Horário disponível</p>
+              <div class="slots" role="radiogroup" aria-labelledby="time-label" aria-describedby="r-time-error" data-slots>
+                <p class="slots__empty">Escolha uma data para ver os horários.</p>
+              </div>
+              <p class="rform__error" id="r-time-error" data-error-for="horario"></p>
+            </div>
+
+            <div class="rform__actions">
+              <button type="button" class="btn" data-next>
+                Continuar
+                <span class="btn__icon"><Icon name="arrow-right" size={16} /></span>
+              </button>
+            </div>
+          </fieldset>
+
+          <!-- Etapa 2 -->
+          <fieldset class="rform__step" data-step="2" hidden>
+            <legend class="rform__legend heading h-s" tabindex="-1">Como podemos chamar você?</legend>
+
+            <div class="rform__row">
+              <div class="rform__field">
+                <label for="r-name" class="rform__label">Nome completo</label>
+                <input id="r-name" name="nome" type="text" autocomplete="name" required minlength="3" aria-describedby="r-name-error" />
+                <p class="rform__error" id="r-name-error" data-error-for="nome"></p>
+              </div>
+              <div class="rform__field">
+                <label for="r-phone" class="rform__label">Celular (WhatsApp)</label>
+                <input
+                  id="r-phone"
+                  name="telefone"
+                  type="tel"
+                  autocomplete="tel-national"
+                  inputmode="tel"
+                  placeholder="(11) 90000-0000"
+                  required
+                  pattern="\(\d{2}\) \d{4,5}-\d{4}"
+                  aria-describedby="r-phone-error"
+                  data-phone
+                />
+                <p class="rform__error" id="r-phone-error" data-error-for="telefone"></p>
+              </div>
+            </div>
+
+            <div class="rform__row">
+              <div class="rform__field">
+                <label for="r-email" class="rform__label">E-mail</label>
+                <input id="r-email" name="email" type="email" autocomplete="email" required aria-describedby="r-email-error" />
+                <p class="rform__error" id="r-email-error" data-error-for="email"></p>
+              </div>
+              <div class="rform__field">
+                <label for="r-occasion" class="rform__label">Ocasião</label>
+                <div class="select">
+                  <select id="r-occasion" name="ocasiao">
+                    {occasions.map((o) => <option value={o}>{o}</option>)}
+                  </select>
+                  <Icon name="chevron-down" size={18} />
+                </div>
+              </div>
+            </div>
+
+            <div class="rform__field">
+              <label for="r-notes" class="rform__label">
+                Observações <span class="rform__optional">(opcional)</span>
+              </label>
+              <textarea
+                id="r-notes"
+                name="observacoes"
+                rows="4"
+                maxlength="400"
+                placeholder="Alergias, restrições alimentares, cadeira para bebê, preferência de mesa…"
+                aria-describedby="r-notes-count"></textarea>
+              <p class="rform__hint" id="r-notes-count" data-counter>0 / 400</p>
+            </div>
+
+            <label class="check">
+              <input type="checkbox" name="politica" required aria-describedby="r-policy-error" />
+              <span class="check__box" aria-hidden="true"><Icon name="check" size={14} strokeWidth={2} /></span>
+              <span>
+                Estou ciente de que a mesa fica reservada por 15 minutos após o horário marcado e que cancelamentos
+                devem ser feitos com 24 horas de antecedência.
+              </span>
+            </label>
+            <p class="rform__error" id="r-policy-error" data-error-for="politica"></p>
+
+            <div class="rform__actions">
+              <button type="button" class="btn btn--ghost" data-prev>
+                Voltar
+              </button>
+              <button type="button" class="btn" data-next>
+                Revisar reserva
+                <span class="btn__icon"><Icon name="arrow-right" size={16} /></span>
+              </button>
+            </div>
+          </fieldset>
+
+          <!-- Etapa 3 -->
+          <fieldset class="rform__step" data-step="3" hidden>
+            <legend class="rform__legend heading h-s" tabindex="-1">Confira os detalhes</legend>
+            <dl class="summary" data-summary></dl>
+            <div class="rform__actions">
+              <button type="button" class="btn btn--ghost" data-prev>Editar</button>
+              <button type="submit" class="btn btn--brass" data-submit>
+                Confirmar reserva
+                <span class="btn__icon"><Icon name="check" size={16} /></span>
+              </button>
+            </div>
+          </fieldset>
+        </form>
+
+        <div class="success" hidden data-success tabindex="-1">
+          <span class="success__icon" aria-hidden="true"><Icon name="check" size={32} strokeWidth={1.5} /></span>
+          <h2 class="heading h-m">Pedido recebido</h2>
+          <p class="body-muted" data-success-text></p>
+          <p class="success__code caps">Código <strong data-success-code></strong></p>
+          <div class="rform__actions">
+            <button type="button" class="btn" data-ics>
+              Adicionar à agenda
+              <span class="btn__icon"><Icon name="calendar" size={16} /></span>
+            </button>
+            <a href="/" class="btn btn--ghost">Voltar ao início</a>
+          </div>
+        </div>
+      </div>
+
+      <aside class="reserve__aside" aria-label="Informações sobre reservas">
+        <div class="aside-card theme-dark">
+          <div class="aside-card__img">
+            <Media src={asideImage} alt="" sizes="(min-width: 1024px) 30vw, 1px" widths={[480, 720]} />
+          </div>
+          <div class="aside-card__body">
+            <h2 class="heading h-xs">Antes de reservar</h2>
+            <ul role="list" class="aside-card__list">
+              <li><Icon name="clock" size={18} /> Tolerância de 15 minutos após o horário marcado.</li>
+              <li><Icon name="calendar" size={18} /> Agenda aberta com 30 dias de antecedência.</li>
+              <li><Icon name="users" size={18} /> Grupos acima de 8 pessoas: {site.contact.events}</li>
+              <li><Icon name="car" size={18} /> {site.address.parking}</li>
+            </ul>
+            <h3 class="caps aside-card__caption">Horários</h3>
+            <ul role="list" class="aside-card__hours">
+              {
+                schedule.map((d) => (
+                  <li>
+                    <span>{d.short}</span>
+                    <span>{d.shifts.length ? d.shifts.map(formatShift).join(' · ') : 'Fechado'}</span>
+                  </li>
+                ))
+              }
+            </ul>
+            <a href={site.contact.whatsappHref} class="btn btn--light btn--sm btn--block" target="_blank" rel="noopener">
+              Prefere falar conosco? WhatsApp
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .reserve__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(3rem, 6vw, 6rem);
+    align-items: start;
+  }
+
+  /* ---------- Indicador de etapas ---------- */
+  .steps {
+    display: flex;
+    gap: var(--space-s);
+    margin: 0 0 var(--space-xl);
+    counter-reset: steps;
+  }
+
+  .steps__item {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    color: var(--color-fg-muted);
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+
+  .steps__item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-line);
+  }
+
+  .steps__item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--brass-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  .steps__item.is-current::after,
+  .steps__item.is-done::after {
+    transform: scaleX(1);
+  }
+
+  .steps__num {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    font-size: var(--step--2);
+    transition:
+      background var(--dur-base),
+      color var(--dur-base),
+      border-color var(--dur-base);
+  }
+
+  .steps__item.is-current,
+  .steps__item.is-done {
+    color: var(--color-fg);
+  }
+
+  .steps__item.is-current .steps__num,
+  .steps__item.is-done .steps__num {
+    background: var(--ink-900);
+    border-color: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  /* ---------- Formulário ---------- */
+  .rform__step {
+    display: grid;
+    gap: var(--space-l);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .rform__step:not([hidden]) {
+    animation: step-in 600ms var(--ease-out);
+  }
+
+  @keyframes step-in {
+    from { opacity: 0; transform: translateX(16px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .rform__legend {
+    padding: 0;
+    margin-bottom: var(--space-s);
+    outline: none;
+  }
+
+  .rform__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-l);
+  }
+
+  .rform__group,
+  .rform__field {
+    display: grid;
+    gap: 0.55rem;
+    align-content: start;
+  }
+
+  .rform__label {
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  .rform__optional {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  .rform input[type='text'],
+  .rform input[type='email'],
+  .rform input[type='tel'],
+  .rform input[type='date'],
+  .rform select,
+  .rform textarea {
+    width: 100%;
+    min-height: 3.4rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--ink-900) 22%, transparent);
+    border-radius: var(--radius-m);
+    background: var(--paper-50);
+    font-size: var(--step-0);
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out);
+  }
+
+  .rform textarea {
+    resize: vertical;
+    min-height: 7rem;
+  }
+
+  .rform input:hover,
+  .rform select:hover,
+  .rform textarea:hover {
+    border-color: color-mix(in srgb, var(--ink-900) 45%, transparent);
+  }
+
+  .rform input:focus-visible,
+  .rform select:focus-visible,
+  .rform textarea:focus-visible {
+    outline: none;
+    border-color: var(--brass-600);
+    box-shadow: 0 0 0 4px rgb(184 146 95 / 0.2);
+  }
+
+  .rform [aria-invalid='true'] {
+    border-color: #a8452b !important;
+  }
+
+  .rform__error {
+    min-height: 0;
+    font-size: var(--step--1);
+    color: #a8452b;
+  }
+
+  .rform__error:empty {
+    display: none;
+  }
+
+  .rform__hint {
+    font-size: var(--step--2);
+    color: var(--color-fg-muted);
+  }
+
+  .select {
+    position: relative;
+  }
+
+  .select select {
+    appearance: none;
+    padding-right: 2.75rem;
+    cursor: pointer;
+  }
+
+  .select :global(svg) {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    translate: 0 -50%;
+    pointer-events: none;
+    color: var(--color-fg-muted);
+  }
+
+  /* Cartões de experiência */
+  .exp-options {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .exp-option {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .exp-option input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .exp-option__box {
+    display: grid;
+    gap: 0.35rem;
+    height: 100%;
+    padding: 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--ink-900) 18%, transparent);
+    border-radius: var(--radius-m);
+    background: var(--paper-50);
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      background var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  .exp-option__box :global(svg) {
+    margin-bottom: 0.5rem;
+    color: var(--brass-600);
+  }
+
+  .exp-option__title {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  .exp-option__meta {
+    font-size: var(--step--2);
+    color: var(--color-fg-muted);
+  }
+
+  .exp-option:hover .exp-option__box {
+    border-color: var(--ink-900);
+    transform: translateY(-2px);
+  }
+
+  .exp-option input:checked + .exp-option__box {
+    background: var(--ink-900);
+    border-color: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  .exp-option input:checked + .exp-option__box :global(svg) {
+    color: var(--brass-400);
+  }
+
+  .exp-option input:checked + .exp-option__box .exp-option__meta {
+    color: var(--stone-400);
+  }
+
+  .exp-option input:focus-visible + .exp-option__box {
+    outline: 2px solid var(--brass-500);
+    outline-offset: 3px;
+  }
+
+  /* Contador de pessoas */
+  .stepper {
+    display: grid;
+    grid-template-columns: 3.4rem 1fr 3.4rem;
+    min-height: 3.4rem;
+    border: 1px solid color-mix(in srgb, var(--ink-900) 22%, transparent);
+    border-radius: var(--radius-m);
+    background: var(--paper-50);
+    overflow: hidden;
+  }
+
+  .stepper:focus-within {
+    border-color: var(--brass-600);
+    box-shadow: 0 0 0 4px rgb(184 146 95 / 0.2);
+  }
+
+  .stepper__btn {
+    display: grid;
+    place-items: center;
+    transition: background var(--dur-fast);
+  }
+
+  .stepper__btn:hover {
+    background: var(--paper-200);
+  }
+
+  .stepper__btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .stepper input {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .stepper input:focus-visible {
+    outline: none;
+  }
+
+  .stepper input::-webkit-inner-spin-button,
+  .stepper input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Horários */
+  .slots {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .slots__empty {
+    padding: 1.1rem;
+    border: 1px dashed var(--color-line);
+    border-radius: var(--radius-m);
+    color: var(--color-fg-muted);
+    font-size: var(--step--1);
+  }
+
+  .slots :global(.slots__shift) {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .slots :global(.slots__shift-title) {
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  .slots :global(.slots__grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+    gap: 0.5rem;
+  }
+
+  .slots :global(.slot) {
+    position: relative;
+  }
+
+  .slots :global(.slot input) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .slots :global(.slot span) {
+    display: grid;
+    place-items: center;
+    min-height: 2.9rem;
+    border: 1px solid color-mix(in srgb, var(--ink-900) 18%, transparent);
+    border-radius: var(--radius-pill);
+    background: var(--paper-50);
+    font-size: var(--step--1);
+    font-weight: 600;
+    transition:
+      background var(--dur-base),
+      color var(--dur-base),
+      border-color var(--dur-base);
+  }
+
+  .slots :global(.slot:hover span) {
+    border-color: var(--ink-900);
+  }
+
+  .slots :global(.slot input:checked + span) {
+    background: var(--ink-900);
+    border-color: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  .slots :global(.slot input:focus-visible + span) {
+    outline: 2px solid var(--brass-500);
+    outline-offset: 3px;
+  }
+
+  .slots :global(.slot input:disabled + span) {
+    opacity: 0.35;
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+
+  /* Checkbox */
+  .check {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+    cursor: pointer;
+  }
+
+  .check input {
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .check__box {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid color-mix(in srgb, var(--ink-900) 35%, transparent);
+    border-radius: 6px;
+    background: var(--paper-50);
+    color: transparent;
+    transition:
+      background var(--dur-fast),
+      color var(--dur-fast);
+  }
+
+  .check input:checked + .check__box {
+    background: var(--ink-900);
+    border-color: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  .check input:focus-visible + .check__box {
+    outline: 2px solid var(--brass-500);
+    outline-offset: 3px;
+  }
+
+  .check input[aria-invalid='true'] + .check__box {
+    border-color: #a8452b;
+  }
+
+  .rform__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-s);
+    padding-top: var(--space-l);
+    border-top: 1px solid var(--color-line);
+  }
+
+  /* Resumo */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-m);
+    background: var(--paper-50);
+    overflow: hidden;
+  }
+
+  .summary :global(div) {
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .summary :global(div:nth-child(odd)) {
+    border-right: 1px solid var(--color-line);
+  }
+
+  .summary :global(div.is-wide) {
+    grid-column: 1 / -1;
+    border-right: 0;
+  }
+
+  .summary :global(dt) {
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  .summary :global(dd) {
+    margin: 0.3rem 0 0;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  /* Sucesso */
+  .success {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-m);
+    padding: clamp(2rem, 5vw, 3.5rem);
+    border-radius: var(--radius-l);
+    background: var(--paper-50);
+    box-shadow: var(--shadow-card);
+    outline: none;
+    animation: step-in 700ms var(--ease-out);
+  }
+
+  .success__icon {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: var(--ink-900);
+    color: var(--brass-400);
+  }
+
+  .success__code strong {
+    margin-left: 0.5rem;
+    font-size: var(--step-0);
+    letter-spacing: 0.14em;
+    color: var(--color-fg);
+  }
+
+  .success .rform__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* ---------- Aside ---------- */
+  .reserve__aside {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+
+  .aside-card {
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    background: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  .aside-card__img {
+    aspect-ratio: 16 / 9;
+  }
+
+  .aside-card__img :global(picture),
+  .aside-card__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .aside-card__body {
+    display: grid;
+    gap: var(--space-m);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .aside-card__list {
+    display: grid;
+    gap: 0.8rem;
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  .aside-card__list li {
+    display: grid;
+    grid-template-columns: 1.4rem 1fr;
+    gap: 0.6rem;
+    overflow-wrap: anywhere;
+  }
+
+  .aside-card__list :global(svg) {
+    margin-top: 0.15rem;
+    color: var(--brass-400);
+  }
+
+  .aside-card__caption {
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--color-line);
+    color: var(--brass-400);
+  }
+
+  .aside-card__hours {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  .aside-card__hours li {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+  }
+
+  .aside-card__hours li span:first-child {
+    color: var(--paper-100);
+  }
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width: 1023px) {
+    .reserve__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .reserve__aside {
+      position: static;
+    }
+
+    .aside-card__img {
+      display: none;
+    }
+
+    .exp-options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 639px) {
+    .rform__row,
+    .summary {
+      grid-template-columns: 1fr;
+    }
+
+    .summary :global(div:nth-child(odd)) {
+      border-right: 0;
+    }
+
+    .steps__label {
+      display: none;
+    }
+
+    .steps__item.is-current .steps__label {
+      display: inline;
+    }
+
+    .rform__actions {
+      flex-direction: column-reverse;
+    }
+
+    .rform__actions .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  import { initReservation } from '@/scripts/reservation';
+  initReservation();
+</script>

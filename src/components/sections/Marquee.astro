@@ -1,0 +1,89 @@
+---
+import { pillars } from '@/data/content';
+
+interface Props {
+  items?: readonly string[];
+  class?: string;
+}
+
+const { items = pillars, class: className } = Astro.props;
+---
+
+<div class:list={["marquee", className]}>
+  <p class="visually-hidden">Nossos pilares: {items.join(', ')}.</p>
+  <div class="marquee__track" aria-hidden="true">
+    {
+      [0, 1].map(() => (
+        <ul class="marquee__group">
+          {items.map((item) => (
+            <li>
+              <span>{item}</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-4.3 4.4-6.3 4.4-10.3 2.8 1.6 4 3.7 4 6 1-.6 1.7-1.7 1.9-3 1.7 1.7 2.7 4.2 2.7 7.1 0 3.8-2.6 6.4-6.5 6.4Z"
+                />
+              </svg>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    padding-block: clamp(1.1rem, 2vw, 1.6rem);
+    background: var(--ink-950);
+    color: var(--paper-100);
+    border-block: 1px solid rgb(243 238 230 / 0.06);
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 48s linear infinite;
+  }
+
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__group {
+    display: flex;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .marquee__group li {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    padding-right: clamp(1.5rem, 3vw, 3rem);
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.1rem + 2vw, 3rem);
+    font-style: italic;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .marquee__group svg {
+    color: var(--brass-400);
+  }
+
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>

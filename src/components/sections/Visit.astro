@@ -1,0 +1,377 @@
+---
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { schedule, site, formatShift } from '@/data/site';
+
+import facadeNight from '@/assets/images/facade-night.jpg';
+
+const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ day, short, shifts })));
+---
+
+<section id="visite" class="visit section" aria-labelledby="visit-title">
+  <div class="container visit__grid">
+    <div class="visit__info">
+      <p class="eyebrow" data-reveal>Visite</p>
+      <h2 id="visit-title" class="heading h-l" data-reveal style="--i: 1">
+        Nos Jardins, entre <em>árvores</em> e boa conversa
+      </h2>
+
+      <div class="visit__blocks">
+        <div class="visit__block" data-reveal>
+          <h3 class="visit__label caps"><Icon name="pin" size={16} /> Endereço</h3>
+          <address>
+            {site.address.street}<br />
+            {site.address.district} · {site.address.city} – {site.address.region}, {site.address.postalCode}
+          </address>
+          <p class="visit__muted"><Icon name="car" size={16} /> {site.address.parking}</p>
+          <a href={site.address.mapsUrl} class="link" target="_blank" rel="noopener">
+            Como chegar <Icon name="arrow-up-right" size={14} />
+          </a>
+        </div>
+
+        <div class="visit__block" data-reveal style="--i: 1">
+          <h3 class="visit__label caps"><Icon name="phone" size={16} /> Contato</h3>
+          <ul role="list" class="visit__contacts">
+            <li><a href={site.contact.phoneHref}>{site.contact.phone}</a></li>
+            <li>
+              <a href={site.contact.whatsappHref} target="_blank" rel="noopener">WhatsApp {site.contact.whatsapp}</a>
+            </li>
+            <li><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="hours" data-reveal data-hours data-schedule={scheduleJson}>
+        <div class="hours__head">
+          <h3 class="visit__label caps"><Icon name="clock" size={16} /> Horários</h3>
+          <p class="hours__status" data-status data-schedule={scheduleJson}>
+            <span class="hours__dot" aria-hidden="true"></span>
+            <span data-status-text>Consulte os horários</span>
+          </p>
+        </div>
+        <table class="hours__table">
+          <caption class="visually-hidden">Horário de funcionamento por dia da semana</caption>
+          <tbody>
+            {
+              schedule.map((d) => (
+                <tr data-day={d.day}>
+                  <th scope="row">{d.name}</th>
+                  <td>
+                    {d.shifts.length
+                      ? d.shifts.map((s) => (
+                          <span class="hours__shift">
+                            <span class="hours__shift-label">{s.label}</span> {formatShift(s)}
+                          </span>
+                        ))
+                      : <span class="hours__closed">Fechado</span>}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="visit__map" data-reveal="clip">
+      <Media
+        src={facadeNight}
+        alt="Fachada do restaurante à noite, com varanda iluminada e toldos"
+        sizes="(min-width: 1024px) 45vw, 100vw"
+        widths={[480, 720, 960, 1280]}
+      />
+      <div class="visit__card">
+        <span class="visit__pin" aria-hidden="true"><Icon name="flame" size={20} /></span>
+        <div>
+          <p class="visit__card-title">{site.fullName}</p>
+          <p class="visit__card-text">{site.address.street} · {site.address.district}</p>
+        </div>
+        <a href={site.address.mapsUrl} target="_blank" rel="noopener" class="btn btn--sm">
+          Abrir no mapa
+          <span class="visually-hidden">(abre em nova aba)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .visit {
+    background: var(--paper-200);
+  }
+
+  .visit__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: stretch;
+  }
+
+  .visit__info {
+    display: grid;
+    gap: var(--space-m);
+    align-content: start;
+  }
+
+  .visit__blocks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-l);
+    margin-top: var(--space-l);
+  }
+
+  .visit__block {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.6rem;
+  }
+
+  .visit__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    color: var(--color-accent);
+  }
+
+  .visit__block address {
+    font-style: normal;
+  }
+
+  .visit__muted {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  .visit__contacts {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+  }
+
+  .visit__contacts a {
+    overflow-wrap: anywhere;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size var(--dur-base) var(--ease-out);
+  }
+
+  .visit__contacts a:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Horários */
+  .hours {
+    margin-top: var(--space-l);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: var(--radius-m);
+    background: var(--paper-50);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 20px 40px -30px rgb(20 14 8 / 0.25);
+  }
+
+  .hours__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: var(--space-s);
+  }
+
+  .hours__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--step--2);
+    font-weight: 600;
+    color: var(--color-fg-muted);
+  }
+
+  .hours__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--stone-400);
+  }
+
+  .hours__status[data-open='true'] .hours__dot {
+    background: #3f8f4f;
+    box-shadow: 0 0 0 4px rgb(63 143 79 / 0.15);
+  }
+
+  .hours__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+  }
+
+  .hours__table tr {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .hours__table th,
+  .hours__table td {
+    padding: 0.6rem 0;
+    vertical-align: top;
+  }
+
+  .hours__table th {
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+    padding-right: 1rem;
+  }
+
+  .hours__table td {
+    text-align: right;
+    color: var(--color-fg-muted);
+  }
+
+  .hours__shift {
+    display: inline-block;
+    margin-left: 1rem;
+    white-space: nowrap;
+  }
+
+  .hours__shift-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stone-500);
+  }
+
+  .hours__closed {
+    font-style: italic;
+  }
+
+  .hours__table tr.is-today th,
+  .hours__table tr.is-today td {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+
+  .hours__table tr.is-today th::after {
+    content: 'hoje';
+    margin-left: 0.5rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: var(--radius-pill);
+    background: var(--ink-900);
+    color: var(--paper-100);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    vertical-align: 0.15em;
+  }
+
+  /* Mapa / fachada */
+  .visit__map {
+    position: relative;
+    min-height: 520px;
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    background: var(--ink-800);
+  }
+
+  .visit__map :global(picture),
+  .visit__map :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .visit__map::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgb(11 10 9 / 0.55), transparent 55%);
+    pointer-events: none;
+  }
+
+  .visit__card {
+    position: absolute;
+    z-index: 1;
+    left: clamp(0.75rem, 2vw, 1.5rem);
+    right: clamp(0.75rem, 2vw, 1.5rem);
+    bottom: clamp(0.75rem, 2vw, 1.5rem);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1rem 1rem 1.1rem;
+    border-radius: var(--radius-m);
+    background: rgb(250 247 242 / 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-card);
+  }
+
+  .visit__pin {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--ink-900);
+    color: var(--brass-400);
+  }
+
+  .visit__card-title {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .visit__card-text {
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  @media (max-width: 1023px) {
+    .visit__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .visit__map {
+      min-height: 0;
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  @media (max-width: 559px) {
+    .visit__blocks {
+      grid-template-columns: 1fr;
+    }
+
+    .visit__map {
+      aspect-ratio: 4 / 5;
+    }
+
+    .visit__card {
+      grid-template-columns: auto 1fr;
+    }
+
+    .visit__card .btn {
+      grid-column: 1 / -1;
+    }
+
+    .hours__shift {
+      display: block;
+      margin-left: 0;
+    }
+  }
+</style>
+
+<script>
+  import { initOpenStatus, nowInSaoPaulo } from '@/scripts/open-status';
+
+  initOpenStatus();
+  const { day } = nowInSaoPaulo();
+  document.querySelector(`[data-hours] tr[data-day="${day}"]`)?.classList.add('is-today');
+</script>

@@ -1,0 +1,252 @@
+---
+import Media from '@/components/ui/Media.astro';
+
+import chefPortrait from '@/assets/images/chef-portrait.jpg';
+import chefFlames from '@/assets/images/chef-flames.jpg';
+---
+
+<section id="chef" class="chef theme-dark" aria-labelledby="chef-title">
+  <div class="container chef__top">
+    <figure class="chef__portrait media-frame" data-reveal="clip">
+      <Media
+        src={chefPortrait}
+        alt="Chef Rafael Tanaka de braços cruzados, vestindo dólmã branco e avental cinza"
+        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 86vw"
+        widths={[420, 640, 900, 1200]}
+        position="50% 25%"
+      />
+    </figure>
+
+    <div class="chef__text">
+      <p class="eyebrow" data-reveal>O Chef</p>
+      <blockquote class="chef__quote" data-reveal style="--i: 1">
+        <p>
+          “O fogo não perdoa pressa. Ele ensina a escutar o ingrediente, a esperar o ponto certo e a respeitar quem
+          veio antes de nós.”
+        </p>
+      </blockquote>
+      <div class="chef__bio body-muted" data-reveal style="--i: 2">
+        <p>
+          Paulistano, neto de imigrantes japoneses e criado entre a feira da Liberdade e o fogão a lenha da avó em
+          Minas, Rafael Tanaka passou por cozinhas em Lima, San Sebastián e Tóquio antes de abrir o Lume.
+        </p>
+        <p>
+          À frente de uma brigada de 14 cozinheiros, ele traduz memória afetiva em técnica — sempre a partir do que
+          os pequenos produtores parceiros colhem a cada semana.
+        </p>
+      </div>
+      <footer class="chef__sign" data-reveal style="--i: 3">
+        <h2 id="chef-title" class="chef__name heading">Rafael Tanaka</h2>
+        <p class="caps">Chef executivo e sócio-fundador</p>
+      </footer>
+    </div>
+  </div>
+
+  <div class="chef__banner">
+    <div class="chef__banner-img">
+      <Media
+        src={chefFlames}
+        alt="Cozinheiro da brigada flambando uma frigideira em meio a chamas altas"
+        sizes="100vw"
+        widths={[640, 960, 1280, 1640]}
+        position="60% 40%"
+      />
+    </div>
+    <p class="chef__words display display--caps" aria-hidden="true">
+      <span class="chef__word chef__word--1">Fogo</span>
+      <span class="chef__word chef__word--2">&amp; alma</span>
+    </p>
+    <p class="chef__banner-caption caps">A brigada · 14 cozinheiros · Cozinha aberta</p>
+  </div>
+</section>
+
+<style>
+  .chef {
+    position: relative;
+    padding-top: var(--section-y);
+    background: var(--ink-950);
+    color: var(--paper-100);
+    overflow: hidden;
+  }
+
+  .chef__top {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: clamp(3rem, 8vw, 8rem);
+    align-items: center;
+  }
+
+  .chef__portrait {
+    margin: 0;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-m);
+  }
+
+  .chef__portrait :global(img) {
+    filter: saturate(0.8) sepia(0.14) contrast(1.04) brightness(0.92);
+  }
+
+  .chef__text {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .chef__quote {
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    font-style: italic;
+    line-height: 1.12;
+    color: var(--paper-100);
+  }
+
+  .chef__bio {
+    display: grid;
+    gap: var(--space-s);
+    max-width: 52ch;
+  }
+
+  .chef__sign {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .chef__name {
+    font-size: var(--step-3);
+  }
+
+  .chef__sign .caps {
+    color: var(--brass-400);
+  }
+
+  /* Faixa com tipografia gigante */
+  .chef__banner {
+    position: relative;
+    margin-top: clamp(5rem, 12vw, 11rem);
+    height: clamp(420px, 78vh, 820px);
+  }
+
+  .chef__banner-img {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .chef__banner-img :global(picture),
+  .chef__banner-img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .chef__banner-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, var(--ink-950) 0%, rgb(11 10 9 / 0.25) 30%, rgb(11 10 9 / 0.2) 70%, rgb(11 10 9 / 0.85) 100%);
+  }
+
+  .chef__words {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-inline: var(--gutter);
+    font-size: clamp(5rem, 1rem + 17vw, 20rem);
+    line-height: 0.8;
+    pointer-events: none;
+  }
+
+  .chef__word--1 {
+    translate: 0 -48%;
+  }
+
+  .chef__word--2 {
+    align-self: flex-end;
+    font-style: italic;
+    color: var(--brass-300);
+    translate: 0 12%;
+  }
+
+  .chef__banner-caption {
+    position: absolute;
+    left: var(--gutter);
+    bottom: var(--space-l);
+    color: rgb(243 238 230 / 0.8);
+  }
+
+  /* Parallax e deslize das palavras via scroll-driven animations */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .chef__banner-img :global(img) {
+        animation: banner-parallax linear both;
+        animation-timeline: view();
+        animation-range: cover;
+        scale: 1.15;
+      }
+
+      .chef__word--1 {
+        animation: word-left linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 60%;
+      }
+
+      .chef__word--2 {
+        animation: word-right linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 70%;
+      }
+    }
+  }
+
+  @keyframes banner-parallax {
+    from { transform: translateY(-7%); }
+    to { transform: translateY(7%); }
+  }
+
+  @keyframes word-left {
+    from { transform: translateX(-12%); }
+    to { transform: translateX(0); }
+  }
+
+  @keyframes word-right {
+    from { transform: translateX(12%); }
+    to { transform: translateX(0); }
+  }
+
+  @media (max-width: 1023px) {
+    .chef__top {
+      grid-template-columns: 1fr;
+    }
+
+    .chef__portrait {
+      width: min(100%, 30rem);
+      aspect-ratio: 4 / 4.4;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .chef__banner-caption {
+      right: var(--gutter);
+      bottom: var(--space-m);
+      font-size: 0.62rem;
+    }
+
+    .chef__words {
+      justify-content: center;
+      gap: 1rem;
+      font-size: 18vw;
+    }
+
+    .chef__word--1 {
+      translate: 0;
+    }
+
+    .chef__word--2 {
+      translate: 0;
+    }
+  }
+</style>

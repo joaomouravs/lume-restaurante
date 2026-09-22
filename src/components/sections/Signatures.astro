@@ -1,0 +1,393 @@
+---
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { menu, dietLabels, formatPrice } from '@/data/menu';
+
+const signatures = menu.flatMap((cat) =>
+  cat.items.filter((item) => item.signature && item.image).map((item) => ({ ...item, category: cat.title, categoryId: cat.id })),
+);
+---
+
+<section class="signatures section texture-paper overlap-up" aria-labelledby="signatures-title">
+  <div class="container signatures__head">
+    <div class="signatures__heading">
+      <p class="eyebrow" data-reveal>Assinaturas</p>
+      <h2 id="signatures-title" class="heading h-l" data-reveal style="--i: 1">
+        Pratos que contam a <em>nossa</em> história
+      </h2>
+    </div>
+    <div class="signatures__aside">
+      <p class="body-muted" data-reveal style="--i: 2">
+        Criações que atravessam estações e se tornaram a identidade da casa. Cada uma nasce de um produtor, de uma
+        técnica e de muita paciência diante do fogo.
+      </p>
+      <div class="carousel-controls" data-reveal style="--i: 3">
+        <button type="button" class="carousel-btn" data-carousel-prev aria-label="Prato anterior" aria-controls="signatures-track">
+          <Icon name="chevron-left" size={20} />
+        </button>
+        <button type="button" class="carousel-btn" data-carousel-next aria-label="Próximo prato" aria-controls="signatures-track">
+          <Icon name="chevron-right" size={20} />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="signatures__viewport" data-carousel>
+    <ol id="signatures-track" class="signatures__track" role="list" data-carousel-track tabindex="0" aria-label="Pratos assinatura">
+      {
+        signatures.map((dish, i) => (
+          <li class="dish-card" data-reveal style={`--i: ${i % 4}`}>
+            <a href={`/cardapio#${dish.categoryId}`} class="dish-card__link">
+              <div class:list={['dish-card__media', { 'is-cutout': dish.image?.format === 'png' }]}>
+                {dish.image && (
+                  <Media
+                    src={dish.image}
+                    alt={dish.imageAlt ?? dish.name}
+                    sizes="(min-width: 1024px) 28vw, (min-width: 640px) 45vw, 80vw"
+                    widths={[400, 640, 900]}
+                  />
+                )}
+                <span class="dish-card__index">{String(i + 1).padStart(2, '0')}</span>
+                <span class="dish-card__more caps">
+                  Ver no cardápio <Icon name="arrow-up-right" size={14} />
+                </span>
+              </div>
+              <div class="dish-card__body">
+                <p class="dish-card__category caps">{dish.category}</p>
+                <h3 class="dish-card__name heading">{dish.name}</h3>
+                <p class="dish-card__desc">{dish.description}</p>
+                <div class="dish-card__meta">
+                  <span class="dish-card__price">
+                    <span class="visually-hidden">Preço: </span>R$ {formatPrice(dish.price)}
+                  </span>
+                  {dish.tags && (
+                    <span class="dish-card__tags">
+                      {dish.tags.map((t) => (
+                        <abbr title={dietLabels[t].label}>{dietLabels[t].short}</abbr>
+                      ))}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <div class="container signatures__foot">
+    <div class="carousel-progress" aria-hidden="true"><span data-carousel-progress></span></div>
+    <a href="/cardapio" class="link">Cardápio completo <Icon name="arrow-right" size={16} /></a>
+  </div>
+</section>
+
+<style>
+  .signatures {
+    padding-top: calc(var(--section-y) + var(--curve));
+    overflow: hidden;
+  }
+
+  .signatures__head {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    align-items: end;
+    gap: var(--space-xl);
+  }
+
+  .signatures__heading {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .signatures__aside {
+    display: grid;
+    gap: var(--space-l);
+    justify-items: start;
+    max-width: 30rem;
+    justify-self: end;
+  }
+
+  /* Controles reutilizáveis de carrossel */
+  .carousel-controls {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .carousel-btn {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    color: var(--color-fg);
+    transition:
+      background var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out),
+      opacity var(--dur-base);
+  }
+
+  .carousel-btn:hover:not(:disabled) {
+    background: var(--ink-900);
+    border-color: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  .carousel-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* Trilho */
+  .signatures__viewport {
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .signatures__track {
+    --card-w: clamp(260px, 27vw, 400px);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--card-w);
+    gap: clamp(1rem, 2vw, 2rem);
+    margin: 0;
+    padding: 0 var(--gutter) var(--space-s);
+    padding-left: max(var(--gutter), (100vw - var(--container)) / 2);
+    scroll-padding-inline: max(var(--gutter), (100vw - var(--container)) / 2);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .signatures__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .signatures__track:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .signatures__track::after {
+    content: '';
+    width: 1px;
+  }
+
+  .dish-card {
+    scroll-snap-align: start;
+  }
+
+  .dish-card:nth-child(even) {
+    padding-top: clamp(0rem, 4vw, 3.5rem);
+  }
+
+  .dish-card__link {
+    display: grid;
+    gap: var(--space-m);
+    border-radius: var(--radius-m);
+  }
+
+  .dish-card__media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-m);
+    background: var(--ink-850);
+  }
+
+  .dish-card__media :global(picture),
+  .dish-card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .dish-card__media :global(img) {
+    transition: transform 1400ms var(--ease-out);
+  }
+
+  /* Prato recortado: flutua sobre fundo escuro */
+  .dish-card__media.is-cutout {
+    display: grid;
+    place-items: center;
+    background: radial-gradient(60% 50% at 50% 45%, var(--ink-700), var(--ink-900));
+  }
+
+  .dish-card__media.is-cutout :global(picture) {
+    width: 78%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .dish-card__media.is-cutout :global(img) {
+    border-radius: 50%;
+    box-shadow: var(--shadow-plate);
+  }
+
+  .dish-card__index {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-style: italic;
+    color: var(--paper-100);
+    text-shadow: 0 2px 16px rgb(0 0 0 / 0.4);
+  }
+
+  .dish-card__more {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 0.95rem;
+    border-radius: var(--radius-pill);
+    background: var(--paper-100);
+    color: var(--ink-900);
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  .dish-card__link:hover .dish-card__media :global(img),
+  .dish-card__link:focus-visible .dish-card__media :global(img) {
+    transform: scale(1.06);
+  }
+
+  .dish-card__link:hover .dish-card__media.is-cutout :global(img) {
+    transform: rotate(18deg) scale(1.03);
+  }
+
+  .dish-card__link:hover .dish-card__more,
+  .dish-card__link:focus-visible .dish-card__more {
+    opacity: 1;
+    transform: none;
+  }
+
+  .dish-card__body {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .dish-card__category {
+    color: var(--color-accent);
+  }
+
+  .dish-card__name {
+    font-size: var(--step-3);
+    line-height: 1.1;
+  }
+
+  .dish-card__desc {
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .dish-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .dish-card__price {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+  }
+
+  .dish-card__tags {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .dish-card__tags abbr {
+    display: grid;
+    place-items: center;
+    min-width: 1.9rem;
+    height: 1.9rem;
+    padding-inline: 0.3rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--color-fg-muted);
+  }
+
+  .signatures__foot {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+    margin-top: var(--space-xl);
+  }
+
+  .carousel-progress {
+    position: relative;
+    flex: 1;
+    height: 1px;
+    background: var(--color-line);
+    overflow: hidden;
+  }
+
+  .carousel-progress span {
+    position: absolute;
+    inset: 0;
+    background: var(--color-fg);
+    transform-origin: left;
+    transform: scaleX(var(--progress, 0.2));
+    transition: transform 200ms linear;
+  }
+
+  @media (max-width: 1023px) {
+    .signatures__head {
+      grid-template-columns: 1fr;
+      gap: var(--space-l);
+    }
+
+    .signatures__aside {
+      justify-self: start;
+    }
+
+    .signatures__track {
+      --card-w: clamp(250px, 44vw, 360px);
+    }
+  }
+
+  @media (max-width: 639px) {
+    .signatures__track {
+      --card-w: 78vw;
+    }
+
+    .dish-card:nth-child(even) {
+      padding-top: 0;
+    }
+
+    .signatures__foot {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-l);
+    }
+
+    .signatures__foot .link {
+      align-self: flex-start;
+    }
+  }
+</style>
+
+<script>
+  import { initCarousels } from '@/scripts/carousel';
+  initCarousels();
+</script>

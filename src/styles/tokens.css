@@ -1,0 +1,125 @@
+/* ==========================================================================
+   LUME — Design tokens
+   Paleta: tinta quente (noite, brasa apagada), papel (linho, guardanapo)
+   e latão (luz de vela, metal da cozinha).
+   ========================================================================== */
+
+:root {
+  /* --- Cores base --- */
+  --ink-950: #0b0a09;
+  --ink-900: #12100e;
+  --ink-850: #181512;
+  --ink-800: #1f1b17;
+  --ink-700: #2b2620;
+  --ink-600: #3a332c;
+
+  --paper-50: #faf7f2;
+  --paper-100: #f3eee6;
+  --paper-200: #e9e2d6;
+  --paper-300: #d9cfbf;
+
+  --stone-400: #a39a8e;
+  --stone-500: #857c70;
+  --stone-600: #6b6358;
+
+  --brass-300: #dcc39c;
+  --brass-400: #cfae7c;
+  --brass-500: #b8925f;
+  --brass-600: #8e6c3f; /* texto de destaque sobre papel (contraste AA) */
+
+  --ember-500: #c4622d;
+
+  /* --- Papéis semânticos (tema claro por padrão) --- */
+  --color-bg: var(--paper-100);
+  --color-bg-alt: var(--paper-200);
+  --color-fg: var(--ink-900);
+  --color-fg-muted: #5c554c;
+  --color-line: color-mix(in srgb, var(--ink-900) 14%, transparent);
+  --color-accent: var(--brass-600);
+  --color-accent-strong: var(--brass-500);
+  --color-focus: var(--brass-500);
+
+  /* --- Tipografia --- */
+  --font-display: 'Cormorant Variable', 'Cormorant', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Escala fluida (min @ 360px → max @ 1440px) */
+  --step--2: clamp(0.69rem, 0.67rem + 0.08vw, 0.75rem);
+  --step--1: clamp(0.8rem, 0.77rem + 0.13vw, 0.875rem);
+  --step-0: clamp(0.95rem, 0.91rem + 0.19vw, 1.0625rem);
+  --step-1: clamp(1.1rem, 1.03rem + 0.33vw, 1.3rem);
+  --step-2: clamp(1.35rem, 1.2rem + 0.65vw, 1.75rem);
+  --step-3: clamp(1.7rem, 1.43rem + 1.2vw, 2.5rem);
+  --step-4: clamp(2.1rem, 1.66rem + 1.95vw, 3.5rem);
+  --step-5: clamp(2.6rem, 1.9rem + 3.1vw, 5rem);
+  --step-6: clamp(3.1rem, 1.95rem + 5.1vw, 7rem);
+  --step-7: clamp(3.6rem, 1.6rem + 8.9vw, 10.5rem);
+
+  --leading-tight: 0.95;
+  --leading-snug: 1.12;
+  --leading-body: 1.65;
+
+  --tracking-caps: 0.18em;
+  --tracking-wide: 0.08em;
+
+  /* --- Espaçamento --- */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+  --space-3xl: 6.5rem;
+
+  --section-y: clamp(5rem, 3.2rem + 8vw, 10rem);
+  --gutter: clamp(1.25rem, 0.6rem + 2.8vw, 3.5rem);
+  --container: 1320px;
+  --container-narrow: 880px;
+
+  /* --- Forma --- */
+  --radius-s: 4px;
+  --radius-m: 10px;
+  --radius-l: 22px;
+  --radius-pill: 999px;
+  --curve: clamp(28px, 6vw, 110px); /* profundidade das bordas curvas entre seções */
+
+  /* --- Movimento --- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --dur-fast: 180ms;
+  --dur-base: 420ms;
+  --dur-slow: 900ms;
+  --dur-xslow: 1400ms;
+
+  /* --- Profundidade --- */
+  --shadow-plate: 0 40px 60px -20px rgb(0 0 0 / 0.45), 0 18px 30px -12px rgb(0 0 0 / 0.35);
+  --shadow-card: 0 30px 60px -30px rgb(20 14 8 / 0.35);
+
+  /* --- Camadas --- */
+  --z-header: 50;
+  --z-overlay: 80;
+  --z-modal: 100;
+
+  --header-h: 84px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-h: 68px;
+  }
+}
+
+/* Tema escuro aplicado por seção */
+.theme-dark {
+  --color-bg: var(--ink-900);
+  --color-bg-alt: var(--ink-850);
+  --color-fg: var(--paper-100);
+  --color-fg-muted: #b3a999;
+  --color-line: color-mix(in srgb, var(--paper-100) 14%, transparent);
+  --color-accent: var(--brass-400);
+  --color-accent-strong: var(--brass-300);
+  color-scheme: dark;
+}

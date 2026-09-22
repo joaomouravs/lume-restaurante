@@ -1,0 +1,304 @@
+---
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import MenuItemRow from '@/components/menu/MenuItemRow.astro';
+import { menu, tastingMenu, formatPrice } from '@/data/menu';
+---
+
+<section class="menu-preview section pb-curve" aria-labelledby="menu-preview-title">
+  <div class="container menu-preview__grid" data-tabs>
+    <div class="menu-preview__content">
+      <p class="eyebrow" data-reveal>Menu da estação · Primavera</p>
+      <h2 id="menu-preview-title" class="heading h-l" data-reveal style="--i: 1">
+        Uma expressão curada da <em>estação</em>
+      </h2>
+      <p class="lead" data-reveal style="--i: 2">
+        Um cardápio enxuto, que muda quatro vezes por ano para acompanhar o que a terra e o mar oferecem.
+      </p>
+
+      <div class="tabs" role="tablist" aria-label="Categorias do cardápio" data-reveal style="--i: 3">
+        {
+          menu.map((cat, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${cat.id}`}
+              class="tabs__tab"
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls={`panel-${cat.id}`}
+              tabindex={i === 0 ? 0 : -1}
+              data-tab={cat.id}
+            >
+              {cat.title}
+            </button>
+          ))
+        }
+        <span class="tabs__indicator" data-tabs-indicator aria-hidden="true"></span>
+      </div>
+
+      {
+        menu.map((cat, i) => (
+          <div
+            role="tabpanel"
+            id={`panel-${cat.id}`}
+            class="menu-preview__panel"
+            aria-labelledby={`tab-${cat.id}`}
+            hidden={i !== 0}
+            tabindex="0"
+            data-panel={cat.id}
+          >
+            <ul role="list" class="menu-preview__list">
+              {cat.items.slice(0, 4).map((item) => (
+                <li>
+                  <MenuItemRow item={item} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+
+      <div class="menu-preview__actions" data-reveal>
+        <a href="/cardapio" class="btn">
+          Ver cardápio completo
+          <span class="btn__icon"><Icon name="arrow-up-right" size={16} /></span>
+        </a>
+        <p class="menu-preview__note">Preços em reais. Serviço opcional de 13%.</p>
+      </div>
+    </div>
+
+    <div class="menu-preview__visual" aria-hidden="true">
+      <div class="menu-preview__oval" data-reveal="clip">
+        {
+          menu.map((cat, i) => (
+            <div class:list={['menu-preview__img', { 'is-active': i === 0 }]} data-tab-image={cat.id}>
+              <Media src={cat.cover} alt="" sizes="(min-width: 1024px) 38vw, 80vw" widths={[480, 720, 960, 1200]} />
+            </div>
+          ))
+        }
+      </div>
+
+      <span class="tasting-badge">
+        <svg viewBox="0 0 200 200" class="tasting-badge__ring">
+          <defs>
+            <path id="badge-circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"></path>
+          </defs>
+          <text>
+            <textPath href="#badge-circle" startOffset="0" textLength="486" lengthAdjust="spacing">
+              {`${tastingMenu.name} · ${tastingMenu.courses} tempos · R$ ${formatPrice(tastingMenu.price)} · `}
+            </textPath>
+          </text>
+        </svg>
+        <span class="tasting-badge__center"><Icon name="flame" size={28} strokeWidth={1.2} /></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .menu-preview {
+    background: var(--paper-200);
+  }
+
+  .menu-preview__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(3rem, 7vw, 8rem);
+    align-items: center;
+  }
+
+  .menu-preview__content {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .menu-preview__content > .lead {
+    margin-bottom: var(--space-s);
+  }
+
+  /* Abas */
+  .tabs {
+    position: relative;
+    display: flex;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    border-bottom: 1px solid var(--color-line);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs__tab {
+    position: relative;
+    flex: none;
+    padding: 0.9rem 0;
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    transition: color var(--dur-base) var(--ease-out);
+  }
+
+  .tabs__tab:hover,
+  .tabs__tab[aria-selected='true'] {
+    color: var(--color-fg);
+  }
+
+  .tabs__tab:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .tabs__indicator {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: var(--w, 0);
+    background: var(--brass-500);
+    transform: translateX(var(--x, 0));
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      width var(--dur-base) var(--ease-out);
+  }
+
+  .menu-preview__panel {
+    border-radius: var(--radius-s);
+  }
+
+  .menu-preview__panel:not([hidden]) {
+    animation: panel-in 600ms var(--ease-out);
+  }
+
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .menu-preview__list {
+    margin: 0;
+  }
+
+  .menu-preview__list li + li {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .menu-preview__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-m) var(--space-l);
+    margin-top: var(--space-m);
+  }
+
+  .menu-preview__note {
+    font-size: var(--step--2);
+    color: var(--color-fg-muted);
+  }
+
+  /* Imagem oval */
+  .menu-preview__visual {
+    position: relative;
+  }
+
+  .menu-preview__oval {
+    position: relative;
+    aspect-ratio: 4 / 5.2;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--ink-800);
+    box-shadow: var(--shadow-card);
+  }
+
+  .menu-preview__img {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.08);
+    transition:
+      opacity 900ms var(--ease-out),
+      transform 1400ms var(--ease-out);
+  }
+
+  .menu-preview__img.is-active {
+    opacity: 1;
+    transform: none;
+  }
+
+  .menu-preview__img :global(picture),
+  .menu-preview__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Selo giratório */
+  .tasting-badge {
+    position: absolute;
+    left: clamp(-4rem, -4vw, -1rem);
+    bottom: 8%;
+    display: grid;
+    place-items: center;
+    width: clamp(120px, 12vw, 168px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ink-900);
+    color: var(--paper-100);
+    box-shadow: var(--shadow-card);
+  }
+
+  .tasting-badge__ring {
+    position: absolute;
+    inset: 6%;
+    width: 88%;
+    height: 88%;
+    animation: spin 22s linear infinite;
+  }
+
+  .tasting-badge__ring text {
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    fill: currentColor;
+  }
+
+  .tasting-badge__center {
+    color: var(--brass-400);
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 1023px) {
+    .menu-preview__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .menu-preview__visual {
+      order: -1;
+      width: min(100%, 26rem);
+      margin-inline: auto;
+    }
+
+    .tasting-badge {
+      left: auto;
+      right: -0.5rem;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .menu-preview__visual {
+      width: 78%;
+    }
+  }
+</style>
+
+<script>
+  import { initTabs } from '@/scripts/tabs';
+  initTabs();
+</script>

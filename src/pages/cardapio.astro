@@ -1,0 +1,567 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/sections/PageHero.astro';
+import ReserveBand from '@/components/sections/ReserveBand.astro';
+import MenuItemRow from '@/components/menu/MenuItemRow.astro';
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { menu, tastingMenu, dietLabels, formatPrice, type DietTag } from '@/data/menu';
+
+import heroImage from '@/assets/images/dish-ragu.jpg';
+import tastingImage from '@/assets/images/chef-pass.jpg';
+
+const filters: { id: DietTag | 'all'; label: string }[] = [
+  { id: 'all', label: 'Todos' },
+  ...(Object.entries(dietLabels) as [DietTag, { label: string }][]).map(([id, v]) => ({ id, label: v.label })),
+];
+---
+
+<BaseLayout
+  title="Cardápio"
+  description="Cardápio da estação do Lume: entradas, pratos na brasa, sobremesas, coquetelaria autoral e o Menu Fogo, nosso menu degustação em sete tempos."
+  ogImage={heroImage}
+>
+  <PageHero eyebrow="Menu da estação · Primavera" image={heroImage} imagePosition="50% 55%" breadcrumb="Cardápio">
+    Cardápio
+    <p slot="intro">
+      Ingredientes de pequenos produtores, técnica precisa e o fogo como assinatura. O menu muda a cada estação — este
+      é o retrato da primavera.
+    </p>
+  </PageHero>
+
+  <div class="menu-bar" data-menu-bar>
+    <div class="container menu-bar__inner">
+      <nav class="menu-bar__nav" aria-label="Categorias do cardápio">
+        <ul role="list">
+          {
+            menu.map((cat) => (
+              <li>
+                <a href={`#${cat.id}`} data-spy-link={cat.id}>
+                  {cat.title}
+                </a>
+              </li>
+            ))
+          }
+          <li><a href="#degustacao" data-spy-link="degustacao">Degustação</a></li>
+        </ul>
+      </nav>
+
+      <div class="menu-bar__filters" role="group" aria-label="Filtrar por restrição alimentar">
+        {
+          filters.map((f, i) => (
+            <button type="button" class="chip" aria-pressed={i === 0 ? 'true' : 'false'} data-filter={f.id}>
+              {f.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+  <p class="visually-hidden" role="status" aria-live="polite" data-filter-status></p>
+
+  <div class="menu-page">
+    {
+      menu.map((cat, ci) => (
+        <section id={cat.id} class="menu-cat" aria-labelledby={`${cat.id}-title`} data-spy={cat.id}>
+          <div class="container menu-cat__grid">
+            <div class="menu-cat__aside">
+              <div class="menu-cat__sticky">
+                <p class="eyebrow" data-reveal>
+                  <span class="eyebrow__index">{String(ci + 1).padStart(2, '0')}</span>
+                  {cat.kicker}
+                </p>
+                <h2 id={`${cat.id}-title`} class="heading h-l" data-reveal style="--i: 1">
+                  {cat.title}
+                </h2>
+                <figure class="menu-cat__cover" data-reveal="clip">
+                  <Media
+                    src={cat.cover}
+                    alt={cat.coverAlt}
+                    sizes="(min-width: 1024px) 30vw, 90vw"
+                    widths={[480, 720, 960]}
+                  />
+                </figure>
+                {cat.note && (
+                  <p class="menu-cat__note">
+                    <Icon name="wine" size={18} /> {cat.note}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div class="menu-cat__list">
+              <ul role="list">
+                {cat.items.map((item, i) => (
+                  <li data-reveal style={`--i: ${i % 3}`} data-item>
+                    <MenuItemRow item={item} />
+                  </li>
+                ))}
+              </ul>
+              <p class="menu-cat__empty" hidden data-empty>
+                Nenhum prato desta seção atende ao filtro selecionado. Nossa equipe pode adaptar receitas — é só pedir.
+              </p>
+            </div>
+          </div>
+        </section>
+      ))
+    }
+
+    <section id="degustacao" class="tasting theme-dark texture-ink" aria-labelledby="tasting-title" data-spy="degustacao">
+      <div class="container tasting__grid">
+        <div class="tasting__intro">
+          <p class="eyebrow" data-reveal>Menu degustação</p>
+          <h2 id="tasting-title" class="heading h-xl" data-reveal style="--i: 1">
+            {tastingMenu.name.split(' ')[0]} <em>{tastingMenu.name.split(' ')[1]}</em>
+          </h2>
+          <p class="body-muted" data-reveal style="--i: 2">{tastingMenu.description}</p>
+
+          <dl class="tasting__facts" data-reveal style="--i: 3">
+            <div>
+              <dt class="caps">Tempos</dt>
+              <dd>{tastingMenu.courses}</dd>
+            </div>
+            <div>
+              <dt class="caps">Duração</dt>
+              <dd>{tastingMenu.duration}</dd>
+            </div>
+            <div>
+              <dt class="caps">Por pessoa</dt>
+              <dd>R$ {formatPrice(tastingMenu.price)}</dd>
+            </div>
+            <div>
+              <dt class="caps">Harmonização</dt>
+              <dd>+ R$ {formatPrice(tastingMenu.pairing)}</dd>
+            </div>
+          </dl>
+
+          <a href="/reservas?experiencia=degustacao" class="btn btn--brass" data-reveal style="--i: 4">
+            Reservar o Menu Fogo
+            <span class="btn__icon"><Icon name="arrow-up-right" size={16} /></span>
+          </a>
+        </div>
+
+        <div class="tasting__steps">
+          <figure class="tasting__img" data-reveal="clip">
+            <Media
+              src={tastingImage}
+              alt="Chef empratando vários pratos do menu degustação no passe da cozinha"
+              sizes="(min-width: 1024px) 40vw, 90vw"
+              widths={[480, 720, 960, 1200]}
+            />
+          </figure>
+          <ol role="list" class="tasting__list">
+            {
+              tastingMenu.steps.map((step, i) => (
+                <li data-reveal style={`--i: ${i}`}>
+                  <span class="tasting__num">{String(i + 1).padStart(2, '0')}</span>
+                  <span>{step}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-info" aria-labelledby="info-title">
+      <div class="container menu-info__grid">
+        <h2 id="info-title" class="heading h-s">Bom saber</h2>
+        <ul role="list" class="menu-info__list">
+          <li>
+            <Icon name="leaf" size={22} />
+            <p><strong>Restrições alimentares.</strong> Informe alergias e restrições no momento da reserva — adaptamos o menu com antecedência.</p>
+          </li>
+          <li>
+            <Icon name="flame" size={22} />
+            <p><strong>Cozinha de fogo.</strong> Carnes são servidas ao ponto sugerido pelo chef; ajustes são sempre bem-vindos.</p>
+          </li>
+          <li>
+            <Icon name="wine" size={22} />
+            <p><strong>Rolha.</strong> Aceitamos até duas garrafas por mesa, com taxa de R$ 90 por garrafa.</p>
+          </li>
+        </ul>
+        <p class="menu-info__legal">
+          Preços em reais, sujeitos a alteração conforme a estação. Serviço opcional de 13%. Imagens meramente ilustrativas.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <ReserveBand />
+</BaseLayout>
+
+<style>
+  /* ---------- Barra fixa de categorias + filtros ---------- */
+  .menu-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--paper-100);
+    transition: top var(--dur-base) var(--ease-out);
+  }
+
+  :global(body:has(.site-header:not(.is-hidden))) .menu-bar {
+    top: var(--header-h);
+  }
+
+  .menu-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .menu-bar__nav ul {
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 2.25rem);
+    margin: 0;
+  }
+
+  .menu-bar__nav a {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.5rem;
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+    transition: color var(--dur-base) var(--ease-out);
+  }
+
+  .menu-bar__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--brass-500);
+    transform: scaleX(0);
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .menu-bar__nav a:hover,
+  .menu-bar__nav a[aria-current='true'] {
+    color: var(--color-fg);
+  }
+
+  .menu-bar__nav a[aria-current='true']::after {
+    transform: scaleX(1);
+  }
+
+  .menu-bar__filters {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .chip {
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    color: var(--color-fg-muted);
+    transition:
+      background var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out);
+  }
+
+  .chip:hover {
+    border-color: var(--color-fg);
+    color: var(--color-fg);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--ink-900);
+    border-color: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  /* ---------- Categorias ---------- */
+  .menu-cat {
+    padding-block: clamp(4rem, 8vw, 7rem);
+    scroll-margin-top: calc(var(--header-h) + 5rem);
+  }
+
+  .menu-cat + .menu-cat {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .menu-cat:nth-of-type(even) {
+    background: var(--paper-200);
+  }
+
+  .menu-cat__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(3rem, 7vw, 7rem);
+  }
+
+  .menu-cat__sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 6rem);
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .menu-cat__cover {
+    margin: var(--space-s) 0 0;
+    aspect-ratio: 4 / 4.6;
+    overflow: hidden;
+    border-radius: 999px 999px var(--radius-m) var(--radius-m);
+    background: var(--ink-800);
+  }
+
+  .menu-cat__cover :global(picture),
+  .menu-cat__cover :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .menu-cat__note {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  .menu-cat__list ul {
+    margin: 0;
+  }
+
+  .menu-cat__list li + li {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .menu-cat__list li[hidden] + li {
+    border-top: 0;
+  }
+
+  .menu-cat__empty {
+    padding: var(--space-l);
+    border: 1px dashed var(--color-line);
+    border-radius: var(--radius-m);
+    color: var(--color-fg-muted);
+    font-style: italic;
+  }
+
+  /* ---------- Degustação ---------- */
+  .tasting {
+    padding-block: var(--section-y);
+    scroll-margin-top: calc(var(--header-h) + 5rem);
+    color: var(--paper-100);
+  }
+
+  .tasting__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: start;
+  }
+
+  .tasting__intro {
+    position: sticky;
+    top: calc(var(--header-h) + 6rem);
+    display: grid;
+    justify-items: start;
+    gap: var(--space-m);
+  }
+
+  .tasting__facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    margin: var(--space-m) 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .tasting__facts div {
+    padding: var(--space-m) 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .tasting__facts div:nth-child(odd) {
+    padding-right: var(--space-m);
+    border-right: 1px solid var(--color-line);
+  }
+
+  .tasting__facts div:nth-child(even) {
+    padding-left: var(--space-m);
+  }
+
+  .tasting__facts dt {
+    color: var(--brass-400);
+  }
+
+  .tasting__facts dd {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+  }
+
+  .tasting__img {
+    margin: 0 0 var(--space-xl);
+    aspect-ratio: 16 / 11;
+    overflow: hidden;
+    border-radius: var(--radius-m);
+  }
+
+  .tasting__img :global(picture),
+  .tasting__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .tasting__list {
+    margin: 0;
+    counter-reset: step;
+  }
+
+  .tasting__list li {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    align-items: baseline;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--color-line);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.25;
+  }
+
+  .tasting__num {
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    letter-spacing: var(--tracking-wide);
+    color: var(--brass-400);
+  }
+
+  /* ---------- Informações ---------- */
+  .menu-info {
+    padding-block: clamp(4rem, 8vw, 6rem);
+    background: var(--paper-200);
+  }
+
+  .menu-info__grid {
+    display: grid;
+    grid-template-columns: 0.6fr 2fr;
+    gap: var(--space-l) var(--space-2xl);
+  }
+
+  .menu-info__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-l);
+    margin: 0;
+  }
+
+  .menu-info__list li {
+    display: grid;
+    gap: var(--space-s);
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  .menu-info__list :global(svg) {
+    color: var(--color-accent);
+  }
+
+  .menu-info__list strong {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+
+  .menu-info__legal {
+    grid-column: 2;
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--step--2);
+    color: var(--color-fg-muted);
+  }
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width: 1023px) {
+    .menu-bar__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+    }
+
+    .menu-bar__nav,
+    .menu-bar__filters {
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+    }
+
+    .menu-bar__nav::-webkit-scrollbar,
+    .menu-bar__filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .menu-cat__grid,
+    .tasting__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .menu-cat__sticky,
+    .tasting__intro {
+      position: static;
+    }
+
+    .menu-cat__sticky {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .menu-cat__sticky > .eyebrow,
+    .menu-cat__sticky > .menu-cat__note {
+      grid-column: 1 / -1;
+    }
+
+    .menu-cat__sticky > .heading {
+      grid-row: 2;
+    }
+
+    .menu-cat__cover {
+      grid-row: 2;
+      grid-column: 2;
+      width: clamp(96px, 22vw, 180px);
+      margin: 0;
+    }
+
+    .menu-info__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .menu-info__legal {
+      grid-column: 1;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .menu-info__list {
+      grid-template-columns: 1fr;
+    }
+
+    .tasting__facts dd {
+      font-size: var(--step-2);
+    }
+  }
+</style>
+
+<script>
+  import { initMenuPage } from '@/scripts/menu-page';
+  initMenuPage();
+</script>

@@ -1,0 +1,387 @@
+---
+import Logo from '@/components/ui/Logo.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { navigation, schedule, site, formatShift } from '@/data/site';
+
+const year = new Date().getFullYear();
+const socialIcons = { Instagram: 'instagram', Spotify: 'spotify', TripAdvisor: 'tripadvisor' } as const;
+---
+
+<footer class="footer texture-ink theme-dark" aria-labelledby="footer-title">
+  <h2 id="footer-title" class="visually-hidden">Rodapé</h2>
+
+  <div class="container footer__top">
+    <div class="footer__intro">
+      <a href="/" class="footer__logo" aria-label={`${site.name} — página inicial`}><Logo /></a>
+      <p class="footer__statement heading">
+        Uma cozinha guiada pelo fogo, pelas estações e por quem planta o que servimos.
+      </p>
+    </div>
+
+    <form class="newsletter" data-newsletter novalidate>
+      <label for="newsletter-email" class="caps newsletter__label">Carta da estação</label>
+      <p class="newsletter__text">
+        Novos menus, jantares a quatro mãos e eventos da adega. Uma carta por estação, sem excessos.
+      </p>
+      <div class="newsletter__field">
+        <input
+          id="newsletter-email"
+          type="email"
+          name="email"
+          placeholder="Seu melhor e-mail"
+          autocomplete="email"
+          required
+          aria-describedby="newsletter-feedback"
+        />
+        <button type="submit" class="newsletter__submit" aria-label="Assinar a carta da estação">
+          <Icon name="arrow-right" size={20} />
+        </button>
+      </div>
+      <p id="newsletter-feedback" class="newsletter__feedback" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <div class="container footer__grid">
+    <nav aria-label="Rodapé">
+      <p class="caps footer__caption">Navegue</p>
+      <ul role="list" class="footer__list">
+        {navigation.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        <li><a href="/reservas">Reservas</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <p class="caps footer__caption">Visite</p>
+      <address class="footer__address">
+        <a href={site.address.mapsUrl} target="_blank" rel="noopener">
+          {site.address.street}<br />
+          {site.address.district} · {site.address.city} – {site.address.region}<br />
+          {site.address.postalCode}
+        </a>
+      </address>
+      <p class="footer__muted">{site.address.parking}</p>
+    </div>
+
+    <div>
+      <p class="caps footer__caption">Horários</p>
+      <ul role="list" class="footer__hours">
+        {
+          schedule.map((d) => (
+            <li>
+              <span>{d.short}</span>
+              <span>{d.shifts.length ? d.shifts.map(formatShift).join(' · ') : 'Fechado'}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <p class="caps footer__caption">Contato</p>
+      <ul role="list" class="footer__list">
+        <li><a href={site.contact.phoneHref}>{site.contact.phone}</a></li>
+        <li><a href={site.contact.whatsappHref} target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>
+        <li><a href={`mailto:${site.contact.events}`}>{site.contact.events}</a></li>
+      </ul>
+      <ul role="list" class="footer__social">
+        {
+          site.social.map((s) => (
+            <li>
+              <a href={s.href} target="_blank" rel="noopener" aria-label={`${s.label} — ${s.handle}`}>
+                <Icon name={socialIcons[s.label]} size={20} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__wordmark" aria-hidden="true">
+    <span>Lume</span>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>© {year} {site.fullName}. Todos os direitos reservados.</p>
+    <p>Beba com moderação. Proibida a venda de bebidas alcoólicas para menores de 18 anos.</p>
+    <a href="#top" class="footer__top-link">
+      Voltar ao topo <Icon name="arrow-up" size={16} />
+    </a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    padding-top: var(--section-y);
+    overflow: hidden;
+    color: var(--paper-100);
+  }
+
+  .footer__top {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .footer__logo {
+    display: inline-block;
+    margin-bottom: var(--space-l);
+  }
+
+  .footer__statement {
+    font-size: var(--step-3);
+    max-width: 22ch;
+    line-height: 1.15;
+  }
+
+  /* Newsletter */
+  .newsletter {
+    align-self: end;
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .newsletter__label {
+    color: var(--brass-400);
+  }
+
+  .newsletter__text {
+    color: var(--color-fg-muted);
+    font-size: var(--step--1);
+    max-width: 40ch;
+  }
+
+  .newsletter__field {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid color-mix(in srgb, var(--paper-100) 35%, transparent);
+    transition: border-color var(--dur-base) var(--ease-out);
+  }
+
+  .newsletter__field:focus-within {
+    border-color: var(--brass-400);
+  }
+
+  .newsletter input {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem 0;
+    background: transparent;
+    border: 0;
+    font-size: var(--step-1);
+    outline: none;
+  }
+
+  .newsletter input::placeholder {
+    color: rgb(243 238 230 / 0.45);
+  }
+
+  .newsletter__submit {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--paper-100);
+    color: var(--ink-950);
+    transition:
+      background var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  .newsletter__submit:hover {
+    background: var(--brass-400);
+    transform: translateX(3px);
+  }
+
+  .newsletter__feedback {
+    min-height: 1.5em;
+    font-size: var(--step--1);
+    color: var(--brass-300);
+  }
+
+  .newsletter__feedback[data-state='error'] {
+    color: #e8a488;
+  }
+
+  /* Colunas */
+  .footer__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-xl) var(--space-l);
+    padding-block: var(--space-2xl);
+    font-size: var(--step--1);
+  }
+
+  .footer__caption {
+    margin-bottom: var(--space-m);
+    color: var(--brass-400);
+  }
+
+  .footer__list {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+  }
+
+  .footer__list a,
+  .footer__address a {
+    color: var(--color-fg-muted);
+    transition: color var(--dur-fast);
+    overflow-wrap: anywhere;
+  }
+
+  .footer__list a:hover,
+  .footer__address a:hover {
+    color: var(--paper-100);
+  }
+
+  .footer__address {
+    font-style: normal;
+    line-height: 1.7;
+  }
+
+  .footer__muted {
+    margin-top: var(--space-s);
+    color: var(--stone-400);
+  }
+
+  .footer__hours {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    color: var(--color-fg-muted);
+  }
+
+  .footer__hours li {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: 0.5rem;
+  }
+
+  .footer__hours li span:first-child {
+    color: var(--paper-100);
+  }
+
+  .footer__social {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: var(--space-m);
+  }
+
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    transition:
+      background var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out);
+  }
+
+  .footer__social a:hover {
+    background: var(--brass-400);
+    border-color: var(--brass-400);
+    color: var(--ink-950);
+  }
+
+  /* Assinatura gigante */
+  .footer__wordmark {
+    display: flex;
+    justify-content: center;
+    margin-bottom: calc(clamp(1rem, 3.2vw, 3.5rem) * -1);
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 30vw, 30rem);
+    line-height: 0.8;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(207 174 124 / 0.28);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .footer__bottom {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s) var(--space-l);
+    padding-block: var(--space-l);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--step--2);
+    color: var(--stone-400);
+  }
+
+  .footer__top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--paper-100);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .footer__top-link:hover :global(svg) {
+    transform: translateY(-3px);
+  }
+
+  .footer__top-link :global(svg) {
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  @media (max-width: 1023px) {
+    .footer__top {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+
+    .footer__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .footer__bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter]');
+  const feedback = form?.querySelector<HTMLElement>('.newsletter__feedback');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const input = form.querySelector<HTMLInputElement>('input[type="email"]');
+    if (!input || !feedback) return;
+
+    if (!input.checkValidity()) {
+      feedback.dataset.state = 'error';
+      feedback.textContent = 'Digite um e-mail válido para receber a carta.';
+      input.setAttribute('aria-invalid', 'true');
+      input.focus();
+      return;
+    }
+
+    input.removeAttribute('aria-invalid');
+    feedback.dataset.state = 'success';
+    feedback.textContent = 'Obrigado! A próxima carta da estação chegará até você.';
+    form.reset();
+  });
+</script>

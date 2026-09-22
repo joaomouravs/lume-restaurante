@@ -1,0 +1,294 @@
+---
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { experiences } from '@/data/content';
+---
+
+<section
+  id="experiencias"
+  class="experiences section texture-ink theme-dark curve-top curve-bottom overlap-up"
+  aria-labelledby="experiences-title"
+>
+  <div class="container experiences__grid" data-tabs>
+    <div class="experiences__intro">
+      <p class="eyebrow" data-reveal>Experiências</p>
+      <h2 id="experiences-title" class="heading h-l" data-reveal style="--i: 1">
+        Além da <em>mesa</em>
+      </h2>
+      <p class="body-muted experiences__lead" data-reveal style="--i: 2">
+        Formatos pensados para cada ocasião: da noite a dois ao jantar privativo para celebrar quem importa.
+      </p>
+
+      <div class="experiences__tabs" role="tablist" aria-orientation="vertical" aria-label="Tipos de experiência">
+        {
+          experiences.map((exp, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`exp-tab-${exp.id}`}
+              class="exp-tab"
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls={`exp-panel-${exp.id}`}
+              tabindex={i === 0 ? 0 : -1}
+              data-tab={exp.id}
+              data-reveal
+              style={`--i: ${i + 3}`}
+            >
+              <span class="exp-tab__title">{exp.title}</span>
+              <sup class="exp-tab__num">{String(i + 1).padStart(2, '0')}</sup>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="experiences__stage">
+      <div class="experiences__media" data-reveal="clip">
+        {
+          experiences.map((exp, i) => (
+            <div class:list={['experiences__img', { 'is-active': i === 0 }]} data-tab-image={exp.id}>
+              <Media
+                src={exp.image}
+                alt={exp.imageAlt}
+                sizes="(min-width: 1024px) 30vw, 90vw"
+                widths={[480, 720, 960, 1200]}
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="experiences__panels">
+        {
+          experiences.map((exp, i) => (
+            <div
+              role="tabpanel"
+              id={`exp-panel-${exp.id}`}
+              aria-labelledby={`exp-tab-${exp.id}`}
+              class="exp-panel"
+              hidden={i !== 0}
+              data-panel={exp.id}
+            >
+              <ul class="exp-panel__meta" role="list">
+                {exp.meta.map((m) => (
+                  <li>{m}</li>
+                ))}
+              </ul>
+              <p class="exp-panel__desc">{exp.description}</p>
+              <a href={exp.cta.href} class="btn btn--light btn--sm">
+                {exp.cta.label}
+                <span class="btn__icon">
+                  <Icon name="arrow-up-right" size={14} />
+                </span>
+              </a>
+              <p class="exp-panel__index" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .experiences {
+    z-index: 2;
+    padding-block: calc(var(--section-y) + var(--curve) * 0.4);
+  }
+
+  .experiences__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: center;
+  }
+
+  .experiences__intro {
+    display: grid;
+    gap: var(--space-m);
+    align-content: start;
+  }
+
+  .experiences__lead {
+    max-width: 38ch;
+    margin-bottom: var(--space-l);
+  }
+
+  .experiences__tabs {
+    display: grid;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .exp-tab {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--color-line);
+    text-align: left;
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    line-height: 1.05;
+    color: rgb(243 238 230 / 0.38);
+    transition: color var(--dur-base) var(--ease-out);
+  }
+
+  .exp-tab__title {
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .exp-tab__num {
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    letter-spacing: var(--tracking-wide);
+    color: var(--brass-400);
+    opacity: 0.6;
+  }
+
+  .exp-tab:hover,
+  .exp-tab[aria-selected='true'] {
+    color: var(--paper-100);
+  }
+
+  .exp-tab[aria-selected='true'] .exp-tab__title {
+    font-style: italic;
+    transform: translateX(0.5rem);
+  }
+
+  .exp-tab[aria-selected='true'] .exp-tab__num {
+    opacity: 1;
+  }
+
+  /* Palco: imagem + painel */
+  .experiences__stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--space-l);
+    align-items: end;
+  }
+
+  .experiences__media {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: var(--radius-m);
+    background: var(--ink-800);
+  }
+
+  .experiences__img {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity 900ms var(--ease-out),
+      transform 1400ms var(--ease-out);
+  }
+
+  .experiences__img.is-active {
+    opacity: 1;
+    transform: none;
+  }
+
+  .experiences__img :global(picture),
+  .experiences__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .exp-panel {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    gap: var(--space-m);
+    padding-bottom: var(--space-s);
+  }
+
+  .exp-panel:not([hidden]) {
+    animation: exp-in 700ms var(--ease-out);
+  }
+
+  @keyframes exp-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .exp-panel__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+  }
+
+  .exp-panel__meta li {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brass-300);
+  }
+
+  .exp-panel__desc {
+    color: var(--color-fg-muted);
+  }
+
+  .exp-panel__index {
+    margin-top: var(--space-l);
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 3rem + 7vw, 10rem);
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(207 174 124 / 0.35);
+  }
+
+  @media (max-width: 1199px) {
+    .experiences__stage {
+      grid-template-columns: 1fr;
+    }
+
+    .experiences__media {
+      aspect-ratio: 16 / 11;
+    }
+
+    .exp-panel__index {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      margin: 0;
+      font-size: clamp(4rem, 2rem + 6vw, 7rem);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .experiences__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .exp-tab {
+      font-size: var(--step-3);
+      padding: 0.9rem 0;
+    }
+  }
+
+  @media (max-width: 559px) {
+    .experiences__media {
+      aspect-ratio: 4 / 5;
+    }
+
+    .exp-panel__index {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { initTabs } from '@/scripts/tabs';
+  initTabs();
+</script>

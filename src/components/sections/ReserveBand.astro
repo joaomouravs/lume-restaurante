@@ -1,0 +1,237 @@
+---
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { site } from '@/data/site';
+
+import roomDining from '@/assets/images/room-dining.jpg';
+
+const times = ['12h30', '13h00', '13h30', '19h00', '19h30', '20h00', '20h30', '21h00', '21h30', '22h00'];
+---
+
+<section class="reserve-band theme-dark" aria-labelledby="reserve-band-title">
+  <div class="reserve-band__bg" aria-hidden="true">
+    <Media src={roomDining} alt="" sizes="100vw" widths={[768, 1280, 1920]} />
+  </div>
+
+  <div class="container reserve-band__inner">
+    <div class="reserve-band__copy">
+      <p class="eyebrow" data-reveal>Reservas</p>
+      <h2 id="reserve-band-title" class="heading h-xl" data-reveal style="--i: 1">
+        Reserve a sua <em>noite</em>
+      </h2>
+      <p class="body-muted" data-reveal style="--i: 2">
+        Reservas abertas com 30 dias de antecedência. Para grupos acima de 8 pessoas, fale com a nossa equipe pelo{' '}
+        <a href={site.contact.whatsappHref} target="_blank" rel="noopener">WhatsApp</a>.
+      </p>
+    </div>
+
+    <form class="quick-reserve" action="/reservas" method="get" data-reveal style="--i: 3" data-quick-reserve>
+      <div class="quick-reserve__field">
+        <label for="qr-date" class="caps">Data</label>
+        <div class="quick-reserve__control">
+          <Icon name="calendar" size={18} />
+          <input id="qr-date" name="data" type="date" required data-min-today />
+        </div>
+      </div>
+      <div class="quick-reserve__field">
+        <label for="qr-time" class="caps">Horário</label>
+        <div class="quick-reserve__control">
+          <Icon name="clock" size={18} />
+          <select id="qr-time" name="horario">
+            {times.map((t) => <option value={t} selected={t === '20h00'}>{t}</option>)}
+          </select>
+        </div>
+      </div>
+      <div class="quick-reserve__field">
+        <label for="qr-guests" class="caps">Pessoas</label>
+        <div class="quick-reserve__control">
+          <Icon name="users" size={18} />
+          <select id="qr-guests" name="pessoas">
+            {
+              [1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                <option value={n} selected={n === 2}>
+                  {n} {n === 1 ? 'pessoa' : 'pessoas'}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn--brass quick-reserve__submit">
+        Continuar
+        <span class="btn__icon"><Icon name="arrow-right" size={16} /></span>
+      </button>
+    </form>
+  </div>
+</section>
+
+<style>
+  .reserve-band {
+    position: relative;
+    padding-block: clamp(6rem, 12vw, 11rem);
+    color: var(--paper-100);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .reserve-band__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .reserve-band__bg :global(picture),
+  .reserve-band__bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .reserve-band__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgb(11 10 9 / 0.92) 0%, rgb(11 10 9 / 0.7) 55%, rgb(11 10 9 / 0.45) 100%);
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reserve-band__bg :global(img) {
+        scale: 1.15;
+        animation: band-parallax linear both;
+        animation-timeline: view();
+      }
+    }
+  }
+
+  @keyframes band-parallax {
+    from { transform: translateY(-6%); }
+    to { transform: translateY(6%); }
+  }
+
+  .reserve-band__inner {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .reserve-band__copy {
+    display: grid;
+    gap: var(--space-m);
+    max-width: 40rem;
+  }
+
+  .reserve-band__copy a {
+    color: var(--paper-100);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* Formulário rápido em "pílula" */
+  .quick-reserve {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem;
+    border: 1px solid rgb(243 238 230 / 0.16);
+    border-radius: var(--radius-l);
+    background: rgb(11 10 9 / 0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .quick-reserve__field {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.7rem 1.25rem;
+  }
+
+  .quick-reserve__field + .quick-reserve__field {
+    border-left: 1px solid rgb(243 238 230 / 0.12);
+  }
+
+  .quick-reserve__field label {
+    color: var(--brass-400);
+  }
+
+  .quick-reserve__control {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--paper-100);
+  }
+
+  .quick-reserve__control :global(svg) {
+    flex: none;
+    opacity: 0.6;
+  }
+
+  .quick-reserve input,
+  .quick-reserve select {
+    width: 100%;
+    min-width: 0;
+    padding: 0.35rem 0;
+    border: 0;
+    background: transparent;
+    font-size: var(--step-0);
+    font-weight: 500;
+    color-scheme: dark;
+    cursor: pointer;
+  }
+
+  .quick-reserve input:focus-visible,
+  .quick-reserve select:focus-visible {
+    outline: none;
+  }
+
+  .quick-reserve__field:focus-within {
+    border-radius: var(--radius-m);
+    box-shadow: inset 0 0 0 1px var(--brass-400);
+  }
+
+  .quick-reserve select option {
+    background: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  .quick-reserve__submit {
+    align-self: center;
+    margin-left: 0.5rem;
+  }
+
+  @media (max-width: 1023px) {
+    .quick-reserve {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .quick-reserve__submit {
+      grid-column: 1 / -1;
+      margin: 0.5rem 0 0;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .quick-reserve {
+      grid-template-columns: 1fr;
+      padding: 0.75rem;
+    }
+
+    .quick-reserve__field + .quick-reserve__field {
+      border-left: 0;
+      border-top: 1px solid rgb(243 238 230 / 0.12);
+    }
+  }
+</style>
+
+<script>
+  // Data mínima = hoje; valor padrão = amanhã
+  document.querySelectorAll<HTMLInputElement>('input[data-min-today]').forEach((input) => {
+    const toISO = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    input.min = toISO(today);
+    if (!input.value) input.value = toISO(tomorrow);
+  });
+</script>

@@ -1,0 +1,131 @@
+---
+import '@/styles/global.css';
+
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { site, schedule } from '@/data/site';
+
+import cormorantLatin from '@fontsource-variable/cormorant/files/cormorant-latin-wght-normal.woff2?url';
+import manropeLatin from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
+import ogDefault from '@/assets/images/room-warm.jpg';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: ImageMetadata;
+  headerVariant?: 'split' | 'dark';
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  ogImage = ogDefault,
+  headerVariant = 'dark',
+  noindex = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} · ${site.fullName}` : `${site.fullName} · Restaurante em São Paulo`;
+const siteUrl = (Astro.site ?? new URL(Astro.url.origin)).href.replace(/\/$/, '');
+const canonical = new URL(Astro.url.pathname, siteUrl).href;
+const og = await getImage({ src: ogImage, width: 1200, height: 630, format: 'jpg', fit: 'cover', quality: 78 });
+const ogUrl = new URL(og.src, siteUrl).href;
+
+// Dados estruturados (schema.org/Restaurant)
+const dayMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const toTime = (m: number) =>
+  `${String(Math.floor((m % 1440) / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: site.fullName,
+  description: site.description,
+  url: siteUrl,
+  image: ogUrl,
+  telephone: site.contact.phone,
+  email: site.contact.email,
+  priceRange: site.priceRange,
+  servesCuisine: site.cuisine,
+  acceptsReservations: `${siteUrl}/reservas`,
+  hasMenu: `${siteUrl}/cardapio`,
+  foundingDate: String(site.foundingYear),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: site.address.city,
+    addressRegion: site.address.region,
+    postalCode: site.address.postalCode,
+    addressCountry: site.address.country,
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: site.address.geo.lat, longitude: site.address.geo.lng },
+  openingHoursSpecification: schedule.flatMap((d) =>
+    d.shifts.map((s) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: dayMap[d.day],
+      opens: toTime(s.open),
+      closes: toTime(s.close),
+    })),
+  ),
+  sameAs: site.social.map((s) => s.href),
+};
+---
+
+<!doctype html>
+<html lang="pt-BR" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>
+      document.documentElement.classList.replace('no-js', 'js');
+    </script>
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#12100e" />
+    <meta name="color-scheme" content="light dark" />
+
+    <link rel="preload" href={cormorantLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={manropeLatin} as="font" type="font/woff2" crossorigin />
+
+    <!-- Open Graph / redes sociais -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.fullName} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <slot name="head" />
+  </head>
+
+  <body id="top">
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <Header variant={headerVariant} />
+    <main id="conteudo" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import { initReveal } from '@/scripts/reveal';
+      initReveal();
+    </script>
+  </body>
+</html>

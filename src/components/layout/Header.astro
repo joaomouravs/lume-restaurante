@@ -1,0 +1,552 @@
+---
+import Logo from '@/components/ui/Logo.astro';
+import Icon from '@/components/ui/Icon.astro';
+import Media from '@/components/ui/Media.astro';
+import { navigation, site } from '@/data/site';
+
+import roomWarm from '@/assets/images/room-warm.jpg';
+import dishAncho from '@/assets/images/dish-ancho.jpg';
+import chefPlating from '@/assets/images/chef-plating.jpg';
+import roomBarLights from '@/assets/images/room-bar-lights.jpg';
+import facadeNight from '@/assets/images/facade-night.jpg';
+
+interface Props {
+  /** `split`: hero claro/escuro da home · `dark`: páginas com topo escuro */
+  variant?: 'split' | 'dark';
+}
+
+const { variant = 'dark' } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const previews = [roomWarm, dishAncho, chefPlating, roomBarLights, facadeNight];
+---
+
+<header class="site-header" data-header data-variant={variant}>
+  <div class="site-header__inner">
+    <div class="site-header__left">
+      <a href="/" class="site-header__brand" aria-label={`${site.name} — página inicial`}>
+        <Logo />
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-menu"
+        data-menu-toggle
+      >
+        <span class="menu-toggle__lines" aria-hidden="true"><span></span><span></span></span>
+        <span class="menu-toggle__label" data-menu-label>Menu</span>
+      </button>
+    </div>
+
+    <div class="site-header__right">
+      <a
+        href="/cardapio"
+        class="site-header__link"
+        aria-current={currentPath === '/cardapio' ? 'page' : undefined}>Cardápio</a
+      >
+      <a href="/reservas" class="btn btn--sm btn--light site-header__cta">
+        <span class="cta-long">Reservar mesa</span>
+        <span class="cta-short">Reservar</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div id="site-menu" class="site-menu theme-dark" data-menu role="dialog" aria-modal="true" aria-label="Navegação" hidden>
+  <div class="site-menu__inner">
+    <nav class="site-menu__nav" aria-label="Principal">
+      <ol role="list">
+        {
+          navigation.map((item, i) => (
+            <li style={`--i: ${i}`}>
+              <a
+                href={item.href}
+                class="site-menu__link"
+                data-menu-link
+                data-preview={i}
+                aria-current={currentPath === item.href ? 'page' : undefined}
+              >
+                <span class="site-menu__num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="site-menu__label">{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class="site-menu__preview" aria-hidden="true">
+      {
+        previews.map((img, i) => (
+          <div class:list={['site-menu__img', { 'is-active': i === 0 }]} data-preview-img={i}>
+            <Media src={img} alt="" sizes="(min-width: 1024px) 34vw, 1px" widths={[640, 960]} />
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="site-menu__footer">
+      <div>
+        <p class="caps site-menu__caption">Endereço</p>
+        <a href={site.address.mapsUrl} target="_blank" rel="noopener">
+          {site.address.street}<br />{site.address.district}, {site.address.city}
+        </a>
+      </div>
+      <div>
+        <p class="caps site-menu__caption">Reservas</p>
+        <a href={site.contact.phoneHref}>{site.contact.phone}</a><br />
+        <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+      </div>
+      <div>
+        <p class="caps site-menu__caption">Siga</p>
+        <ul role="list" class="site-menu__social">
+          {
+            site.social.map((s) => (
+              <li>
+                <a href={s.href} target="_blank" rel="noopener">
+                  {s.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <a href="/reservas" class="btn btn--brass site-menu__cta">
+        Reservar mesa
+        <span class="btn__icon"><Icon name="arrow-up-right" size={16} /></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ---------------- Header ---------------- */
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: var(--z-header);
+    height: var(--header-h);
+    color: var(--paper-100);
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      background-color var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out);
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: color-mix(in srgb, var(--ink-900) 94%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom: 1px solid rgb(243 238 230 / 0.08);
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+
+  .site-header.is-scrolled::before {
+    opacity: 1;
+  }
+
+  .site-header.is-hidden {
+    transform: translateY(-100%);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    height: 100%;
+    padding-inline: var(--gutter);
+  }
+
+  .site-header__left,
+  .site-header__right {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    transition: color var(--dur-base) var(--ease-out);
+  }
+
+  .site-header__brand {
+    border-radius: var(--radius-s);
+  }
+
+  .site-header__brand :global(.logo__name) {
+    font-size: 1.55rem;
+  }
+
+  .site-header__link {
+    position: relative;
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    padding-block: 0.4rem;
+  }
+
+  .site-header__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .site-header__link:hover::after,
+  .site-header__link[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .cta-short {
+    display: none;
+  }
+
+  /* Hero dividido da home: lado esquerdo claro no topo */
+  @media (min-width: 1024px) {
+    .site-header[data-variant='split']:not(.is-scrolled):not(.is-menu-open) .site-header__left {
+      color: var(--ink-900);
+    }
+
+    .site-header[data-variant='split']:not(.is-scrolled):not(.is-menu-open) .site-header__left :global(.logo__mark) {
+      color: var(--brass-600);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .site-header__link {
+      display: none;
+    }
+
+    .site-header__brand :global(.logo__tagline) {
+      display: none;
+    }
+
+    .cta-long {
+      display: none;
+    }
+
+    .cta-short {
+      display: inline;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .site-header__brand :global(.logo__mark) {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+
+    .site-header__brand :global(.logo__name) {
+      font-size: 1.3rem;
+    }
+  }
+
+  /* Botão Menu */
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    padding-inline: 0.25rem;
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    border-radius: var(--radius-s);
+  }
+
+  .menu-toggle__lines {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    width: 22px;
+  }
+
+  .menu-toggle__lines span {
+    display: block;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .menu-toggle__lines span:last-child {
+    width: 70%;
+  }
+
+  .menu-toggle:hover .menu-toggle__lines span:last-child {
+    width: 100%;
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-toggle__lines span:first-child {
+    transform: translateY(3.75px) rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-toggle__lines span:last-child {
+    width: 100%;
+    transform: translateY(-3.75px) rotate(-45deg);
+  }
+
+  @media (max-width: 767px) {
+    .site-header__left {
+      gap: 0;
+    }
+
+    .site-header__inner {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+    }
+
+    .site-header__left {
+      display: contents;
+    }
+
+    .menu-toggle {
+      order: 3;
+      grid-column: 3;
+    }
+
+    .site-header__right {
+      grid-column: 2;
+      justify-self: end;
+      margin-right: 0.5rem;
+    }
+
+    .menu-toggle__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .menu-toggle__lines {
+      width: 26px;
+    }
+  }
+
+  /* ---------------- Menu em tela cheia ---------------- */
+  .site-menu {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-header) - 1);
+    background: var(--ink-950);
+    color: var(--paper-100);
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 800ms var(--ease-in-out);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .site-menu[hidden] {
+    display: block;
+    visibility: hidden;
+  }
+
+  .site-menu.is-open {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .site-menu__inner {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    grid-template-rows: 1fr auto;
+    gap: var(--space-xl) var(--space-2xl);
+    min-height: 100%;
+    padding: calc(var(--header-h) + var(--space-xl)) var(--gutter) var(--space-xl);
+  }
+
+  .site-menu__nav ol {
+    display: grid;
+    align-content: center;
+    gap: 0.2rem;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-menu__link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding-block: 0.15rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 1.5rem + 4.6vw, 6rem);
+    line-height: 1.02;
+    color: var(--paper-100);
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 700ms var(--ease-out),
+      color var(--dur-base) var(--ease-out);
+  }
+
+  .is-open .site-menu__link {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(250ms + var(--i) * 70ms), calc(250ms + var(--i) * 70ms), 0ms;
+  }
+
+  .site-menu__num {
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    letter-spacing: var(--tracking-wide);
+    color: var(--brass-400);
+    transform: translateY(-1.6em);
+  }
+
+  .site-menu__label {
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      font-style var(--dur-base);
+  }
+
+  .site-menu__nav ol:hover .site-menu__link {
+    color: rgb(243 238 230 / 0.35);
+  }
+
+  .site-menu__nav ol .site-menu__link:hover,
+  .site-menu__nav ol .site-menu__link:focus-visible {
+    color: var(--paper-100);
+  }
+
+  .site-menu__link:hover .site-menu__label,
+  .site-menu__link:focus-visible .site-menu__label {
+    font-style: italic;
+    transform: translateX(0.6rem);
+  }
+
+  .site-menu__link[aria-current='page'] .site-menu__label {
+    font-style: italic;
+    color: var(--brass-300);
+  }
+
+  .site-menu__preview {
+    position: relative;
+    align-self: center;
+    aspect-ratio: 4 / 5;
+    max-height: 64vh;
+    width: 100%;
+    max-width: 30rem;
+    justify-self: end;
+    border-radius: 999px 999px var(--radius-m) var(--radius-m);
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.96);
+    transition:
+      opacity 900ms var(--ease-out) 300ms,
+      transform 900ms var(--ease-out) 300ms;
+  }
+
+  .is-open .site-menu__preview {
+    opacity: 1;
+    transform: none;
+  }
+
+  .site-menu__img {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.08);
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 1200ms var(--ease-out);
+  }
+
+  .site-menu__img.is-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .site-menu__img :global(img),
+  .site-menu__img :global(picture) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .site-menu__footer {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, auto) 1fr;
+    align-items: end;
+    gap: var(--space-l) var(--space-2xl);
+    padding-top: var(--space-l);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+    opacity: 0;
+    transition: opacity 700ms var(--ease-out);
+  }
+
+  .is-open .site-menu__footer {
+    opacity: 1;
+    transition-delay: 550ms;
+  }
+
+  .site-menu__footer a:hover {
+    color: var(--paper-100);
+  }
+
+  .site-menu__caption {
+    margin-bottom: 0.5rem;
+    color: var(--brass-400);
+  }
+
+  .site-menu__social {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+  }
+
+  .site-menu__cta {
+    justify-self: end;
+  }
+
+  @media (max-width: 1023px) {
+    .site-menu__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .site-menu__preview {
+      display: none;
+    }
+
+    .site-menu__footer {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .site-menu__cta {
+      grid-column: 1 / -1;
+      justify-self: stretch;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .site-menu__footer {
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+    }
+
+    .site-menu__footer > div:nth-child(3) {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { initHeader } from '@/scripts/header';
+  initHeader();
+</script>

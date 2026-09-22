@@ -1,0 +1,110 @@
+---
+/**
+ * Linha de cardápio: nome ···· preço, descrição e selos alimentares.
+ * Reutilizada na prévia da home e na página de cardápio.
+ */
+import { dietLabels, formatPrice, type MenuItem } from '@/data/menu';
+
+interface Props {
+  item: MenuItem;
+  headingLevel?: 'h3' | 'h4';
+}
+
+const { item, headingLevel: Heading = 'h3' } = Astro.props;
+---
+
+<article class="menu-row" data-tags={(item.tags ?? []).join(' ')}>
+  <div class="menu-row__top">
+    <Heading class="menu-row__name">
+      {item.name}
+      {item.signature && <span class="menu-row__badge" title="Prato assinatura">Assinatura</span>}
+    </Heading>
+    <span class="menu-row__leader" aria-hidden="true"></span>
+    <p class="menu-row__price"><span class="visually-hidden">Preço: </span>R$ {formatPrice(item.price)}</p>
+  </div>
+  <p class="menu-row__desc">{item.description}</p>
+  {
+    item.tags && item.tags.length > 0 && (
+      <ul class="menu-row__tags" role="list" aria-label="Informações alimentares">
+        {item.tags.map((t) => (
+          <li>{dietLabels[t].label}</li>
+        ))}
+      </ul>
+    )
+  }
+</article>
+
+<style>
+  .menu-row {
+    display: grid;
+    gap: 0.4rem;
+    padding-block: 1.25rem;
+  }
+
+  .menu-row__top {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .menu-row__name {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .menu-row__badge {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid currentColor;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    vertical-align: 0.35em;
+    color: var(--color-accent);
+  }
+
+  .menu-row__leader {
+    flex: 1;
+    min-width: 1.5rem;
+    border-bottom: 1px dotted color-mix(in srgb, var(--color-fg) 35%, transparent);
+    transform: translateY(-0.3em);
+  }
+
+  .menu-row__price {
+    flex: none;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    font-variant-numeric: lining-nums;
+  }
+
+  .menu-row__desc {
+    max-width: 52ch;
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  .menu-row__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.35rem 0 0;
+  }
+
+  .menu-row__tags li {
+    padding: 0.18rem 0.6rem;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-fg) 7%, transparent);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-fg-muted);
+  }
+</style>

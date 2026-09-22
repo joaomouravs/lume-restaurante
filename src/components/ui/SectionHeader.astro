@@ -1,0 +1,53 @@
+---
+/**
+ * Cabeçalho padrão de seção: rótulo (eyebrow) + título + texto de apoio.
+ * O título é recebido via slot para permitir <em> e quebras intencionais.
+ */
+interface Props {
+  eyebrow: string;
+  index?: string;
+  align?: 'left' | 'center';
+  as?: 'h1' | 'h2' | 'h3';
+  size?: 'l' | 'm' | 's';
+  id?: string;
+  class?: string;
+}
+
+const { eyebrow, index, align = 'left', as: Tag = 'h2', size = 'l', id, class: className } = Astro.props;
+const hasIntro = Astro.slots.has('intro');
+---
+
+<header class:list={['section-header', `section-header--${align}`, className]}>
+  <p class:list={['eyebrow', { 'eyebrow--center': align === 'center' }]} data-reveal>
+    {index && <span class="eyebrow__index">{index}</span>}
+    {eyebrow}
+  </p>
+  <Tag id={id} class:list={['heading', `h-${size}`]} data-reveal style="--i: 1">
+    <slot />
+  </Tag>
+  {
+    hasIntro && (
+      <div class="section-header__intro lead" data-reveal style="--i: 2">
+        <slot name="intro" />
+      </div>
+    )
+  }
+</header>
+
+<style>
+  .section-header {
+    display: grid;
+    gap: var(--space-m);
+    max-width: 44rem;
+  }
+
+  .section-header--center {
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .section-header--center .section-header__intro {
+    margin-inline: auto;
+  }
+</style>

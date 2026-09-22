@@ -1,0 +1,330 @@
+---
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { schedule, site } from '@/data/site';
+
+import heroInterior from '@/assets/images/hero-interior.jpg';
+import heroPlate from '@/assets/images/hero-plate.png';
+
+const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ day, short, shifts })));
+---
+
+<section class="hero" aria-labelledby="hero-title" data-reveal-group>
+  <div class="hero__text texture-paper">
+    <p class="hero__intro">
+      Cozinha contemporânea brasileira, conduzida pela brasa e pelas estações. Desde {site.foundingYear}, nos Jardins.
+    </p>
+
+    <h1 id="hero-title" class="hero__title display display--caps">
+      <span class="split-line" style="--i: 1"><span>A arte</span></span>
+      <span class="split-line" style="--i: 2"><span>do <em>fogo</em>,</span></span>
+      <span class="split-line" style="--i: 3"><span>à mesa</span></span>
+    </h1>
+
+    <div class="hero__actions">
+      <a href="/reservas" class="btn">
+        Reservar mesa
+        <span class="btn__icon"><Icon name="arrow-up-right" size={16} /></span>
+      </a>
+      <a href="/cardapio" class="link">Ver cardápio <Icon name="arrow-right" size={16} /></a>
+    </div>
+  </div>
+
+  <div class="hero__media theme-dark">
+    <div class="hero__image">
+      <Media
+        src={heroInterior}
+        alt="Salão do Lume à noite, com mesas postas, cortinas de veludo e luz baixa de arandelas"
+        sizes="(min-width: 1024px) 54vw, 100vw"
+        widths={[640, 960, 1280, 1600]}
+        priority
+        position="50% 60%"
+      />
+    </div>
+
+    <div class="hero__status" data-status data-schedule={scheduleJson}>
+      <span class="hero__status-dot" aria-hidden="true"></span>
+      <span data-status-text>Jantar de terça a sábado · 19h</span>
+    </div>
+  </div>
+
+  <div class="hero__plate" aria-hidden="true">
+    <div class="hero__plate-spin">
+      <Media
+        src={heroPlate}
+        alt=""
+        sizes="(min-width: 1024px) 34vw, 58vw"
+        widths={[360, 540, 720, 960]}
+        priority
+        quality={80}
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --split: 48%;
+    --plate: clamp(280px, min(30vw, 54vh), 540px);
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--split) 1fr;
+    min-height: max(680px, 100svh);
+    max-height: 1100px;
+    background: var(--paper-100);
+    isolation: isolate;
+  }
+
+  /* ---------- Texto ---------- */
+  .hero__text {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-xl);
+    padding: calc(var(--header-h) + clamp(1.5rem, 4vw, 4rem)) var(--gutter) clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .hero__intro {
+    max-width: 30ch;
+    font-size: var(--step--1);
+    line-height: 1.7;
+    color: var(--color-fg-muted);
+  }
+
+  .hero__title {
+    position: relative;
+    z-index: 4;
+    font-size: clamp(3.4rem, 1.2rem + 7.2vw, 9.25rem);
+    line-height: 0.88;
+    margin-top: auto;
+  }
+
+  .hero__title em {
+    color: var(--brass-600);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-m) var(--space-l);
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity var(--dur-slow) var(--ease-out) 700ms,
+      transform var(--dur-slow) var(--ease-out) 700ms;
+  }
+
+  .hero.is-visible .hero__actions,
+  :global(.no-js) .hero__actions {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- Imagem ---------- */
+  .hero__media {
+    position: relative;
+    overflow: hidden;
+    border-bottom-left-radius: clamp(120px, 16vw, 300px);
+    background: var(--ink-900);
+  }
+
+  .hero__image {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 0 0 100%);
+    transition: clip-path 1600ms var(--ease-in-out) 100ms;
+  }
+
+  .hero.is-visible .hero__image,
+  :global(.no-js) .hero__image {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .hero__image :global(picture),
+  .hero__image :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__image :global(img) {
+    transform: scale(1.12);
+    transition: transform 2600ms var(--ease-out);
+  }
+
+  .hero.is-visible .hero__image :global(img) {
+    transform: scale(1.02);
+  }
+
+  .hero__image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgb(11 10 9 / 0.55) 0%, transparent 28%),
+      linear-gradient(0deg, rgb(11 10 9 / 0.7) 0%, transparent 40%);
+  }
+
+  .hero__status {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(2rem, 4vw, 3.5rem);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 1.1rem;
+    border: 1px solid rgb(243 238 230 / 0.18);
+    border-radius: var(--radius-pill);
+    background: rgb(11 10 9 / 0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: var(--step--2);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--paper-100);
+  }
+
+  .hero__status-dot {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--stone-400);
+  }
+
+  .hero__status[data-open='true'] .hero__status-dot {
+    background: #7fc48a;
+  }
+
+  .hero__status[data-open='true'] .hero__status-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid #7fc48a;
+    animation: pulse 2.2s var(--ease-out) infinite;
+  }
+
+  @keyframes pulse {
+    from { transform: scale(0.6); opacity: 1; }
+    to { transform: scale(1.8); opacity: 0; }
+  }
+
+  /* ---------- Prato flutuante ---------- */
+  .hero__plate {
+    position: absolute;
+    z-index: 3;
+    top: calc(var(--header-h) + clamp(0.5rem, 3vh, 2.5rem));
+    left: calc(var(--split) - var(--plate) * 0.38);
+    width: var(--plate);
+    aspect-ratio: 1;
+    pointer-events: none;
+  }
+
+  .hero__plate-spin {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: var(--shadow-plate);
+    opacity: 0;
+    transform: rotate(-70deg) scale(0.82);
+    transition:
+      opacity 1200ms var(--ease-out) 500ms,
+      transform 2000ms var(--ease-out) 500ms;
+  }
+
+  .hero.is-visible .hero__plate-spin,
+  :global(.no-js) .hero__plate-spin {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .hero__plate :global(img) {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  /* O prato gira devagar conforme a rolagem (onde houver suporte) */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hero__plate {
+        animation: plate-scroll linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 100vh;
+      }
+    }
+  }
+
+  @keyframes plate-scroll {
+    to { transform: rotate(40deg) translateY(8%); }
+  }
+
+  /* ---------- Tablet e mobile ---------- */
+  @media (max-width: 1023px) {
+    .hero {
+      --plate: clamp(210px, 52vw, 400px);
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      min-height: 0;
+      max-height: none;
+    }
+
+    .hero__media {
+      grid-row: 1;
+      height: clamp(420px, 64svh, 720px);
+      border-bottom-left-radius: 0;
+      border-radius: 0 0 50% 50% / 0 0 var(--curve) var(--curve);
+    }
+
+    .hero__text {
+      grid-row: 2;
+      padding-top: calc(var(--plate) * 0.5 + var(--space-l));
+      gap: var(--space-l);
+    }
+
+    .hero__intro {
+      order: 2;
+      max-width: 42ch;
+    }
+
+    .hero__title {
+      order: 1;
+      margin-top: 0;
+      font-size: clamp(3.3rem, 1rem + 11vw, 7rem);
+    }
+
+    .hero__actions {
+      order: 3;
+    }
+
+    .hero__plate {
+      top: calc(clamp(420px, 64svh, 720px) - var(--plate) * 0.62);
+      left: auto;
+      right: var(--gutter);
+    }
+
+    .hero__status {
+      top: calc(var(--header-h) + 0.5rem);
+      left: var(--gutter);
+      right: auto;
+      bottom: auto;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .hero__actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+
+<script>
+  import { initOpenStatus } from '@/scripts/open-status';
+
+  // O hero entra imediatamente, sem esperar o IntersectionObserver
+  requestAnimationFrame(() => document.querySelector('.hero')?.classList.add('is-visible'));
+  initOpenStatus();
+</script>

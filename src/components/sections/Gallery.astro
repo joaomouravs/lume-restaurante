@@ -1,0 +1,371 @@
+---
+import { getImage } from 'astro:assets';
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { gallery } from '@/data/content';
+
+// Versões ampliadas para o lightbox (carregadas somente quando abertas)
+const items = await Promise.all(
+  gallery.map(async (item) => {
+    const full = await getImage({ src: item.image, width: Math.min(1800, item.image.width), format: 'webp', quality: 80 });
+    return { ...item, full: full.src };
+  }),
+);
+---
+
+<section id="galeria" class="gallery section texture-paper pt-curve overlap-up" aria-labelledby="gallery-title">
+  <div class="container">
+    <div class="gallery__head">
+      <div class="gallery__heading">
+        <p class="eyebrow" data-reveal>Galeria</p>
+        <h2 id="gallery-title" class="heading h-l" data-reveal style="--i: 1">
+          Luz baixa, <em>conversa</em> longa
+        </h2>
+      </div>
+      <p class="body-muted gallery__text" data-reveal style="--i: 2">
+        Madeira, veludo e metal envelhecido. Um salão para 70 pessoas, um bar de coquetelaria e uma cozinha aberta
+        onde o fogo nunca apaga.
+      </p>
+    </div>
+
+    <ul class="gallery__grid" role="list" data-gallery>
+      {
+        items.map((item, i) => (
+          <li class:list={['gallery__item', `gallery__item--${item.layout}`]} data-reveal="scale" style={`--i: ${i % 4}`}>
+            <button
+              type="button"
+              class="gallery__btn"
+              data-gallery-open={i}
+              data-full={item.full}
+              data-caption={item.caption}
+              data-alt={item.alt}
+              aria-label={`Ampliar foto: ${item.caption}`}
+            >
+              <Media
+                src={item.image}
+                alt={item.alt}
+                sizes={
+                  item.layout === 'wide'
+                    ? '(min-width: 1024px) 46vw, (min-width: 640px) 64vw, 100vw'
+                    : '(min-width: 1024px) 23vw, (min-width: 640px) 32vw, 50vw'
+                }
+                widths={[360, 540, 720, 1080]}
+              />
+              <span class="gallery__caption">
+                <span>{item.caption}</span>
+                <Icon name="expand" size={16} />
+              </span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="gallery__social" data-reveal>
+      Compartilhe sua noite com <a href="https://instagram.com/" target="_blank" rel="noopener" class="link">
+        @lume.restaurante <Icon name="arrow-up-right" size={14} />
+      </a>
+    </p>
+  </div>
+
+  <dialog class="lightbox" data-lightbox aria-label="Galeria ampliada">
+    <div class="lightbox__inner">
+      <figure class="lightbox__figure">
+        <img class="lightbox__img" data-lightbox-img alt="" decoding="async" />
+        <figcaption class="lightbox__caption">
+          <span data-lightbox-caption></span>
+          <span class="lightbox__count" data-lightbox-count></span>
+        </figcaption>
+      </figure>
+      <button type="button" class="lightbox__btn lightbox__prev" data-lightbox-prev aria-label="Foto anterior">
+        <Icon name="chevron-left" size={24} />
+      </button>
+      <button type="button" class="lightbox__btn lightbox__next" data-lightbox-next aria-label="Próxima foto">
+        <Icon name="chevron-right" size={24} />
+      </button>
+      <button type="button" class="lightbox__btn lightbox__close" data-lightbox-close aria-label="Fechar galeria">
+        <Icon name="close" size={22} />
+      </button>
+    </div>
+  </dialog>
+</section>
+
+<style>
+  .gallery__head {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-xl);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .gallery__heading {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .gallery__text {
+    max-width: 40ch;
+    justify-self: end;
+  }
+
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: clamp(150px, 16vw, 260px);
+    grid-auto-flow: dense;
+    gap: clamp(0.6rem, 1.2vw, 1.25rem);
+    margin: 0;
+  }
+
+  .gallery__item--tall {
+    grid-row: span 2;
+  }
+
+  .gallery__item--wide {
+    grid-column: span 2;
+  }
+
+  .gallery__btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-m);
+    background: var(--ink-800);
+    cursor: zoom-in;
+  }
+
+  .gallery__btn :global(picture),
+  .gallery__btn :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gallery__btn :global(img) {
+    transition:
+      transform 1400ms var(--ease-out),
+      filter var(--dur-slow) var(--ease-out);
+  }
+
+  .gallery__btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgb(11 10 9 / 0.6), transparent 45%);
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+
+  .gallery__caption {
+    position: absolute;
+    z-index: 1;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--paper-100);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-style: italic;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  .gallery__btn:hover :global(img),
+  .gallery__btn:focus-visible :global(img) {
+    transform: scale(1.05);
+  }
+
+  .gallery__btn:hover::after,
+  .gallery__btn:focus-visible::after,
+  .gallery__btn:hover .gallery__caption,
+  .gallery__btn:focus-visible .gallery__caption {
+    opacity: 1;
+    transform: none;
+  }
+
+  .gallery__social {
+    margin-top: var(--space-xl);
+    text-align: center;
+    color: var(--color-fg-muted);
+  }
+
+  .gallery__social .link {
+    color: var(--color-fg);
+    margin-left: 0.4rem;
+  }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--paper-100);
+  }
+
+  .lightbox::backdrop {
+    background: rgb(11 10 9 / 0.94);
+    backdrop-filter: blur(6px);
+  }
+
+  .lightbox[open] {
+    animation: lb-in 400ms var(--ease-out);
+  }
+
+  @keyframes lb-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .lightbox__inner {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: clamp(4rem, 8vh, 6rem) clamp(1rem, 8vw, 7rem);
+  }
+
+  .lightbox__figure {
+    display: grid;
+    gap: 1rem;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
+  }
+
+  .lightbox__img {
+    max-width: 100%;
+    max-height: calc(100svh - 12rem);
+    width: auto;
+    height: auto;
+    margin-inline: auto;
+    border-radius: var(--radius-s);
+    object-fit: contain;
+    transition: opacity 300ms var(--ease-out);
+  }
+
+  .lightbox__img.is-loading {
+    opacity: 0.2;
+  }
+
+  .lightbox__caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-style: italic;
+  }
+
+  .lightbox__count {
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    font-style: normal;
+    letter-spacing: var(--tracking-wide);
+    color: var(--stone-400);
+  }
+
+  .lightbox__btn {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 1px solid rgb(243 238 230 / 0.2);
+    border-radius: 50%;
+    color: var(--paper-100);
+    background: rgb(11 10 9 / 0.4);
+    transition:
+      background var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out);
+  }
+
+  .lightbox__btn:hover {
+    background: var(--paper-100);
+    color: var(--ink-950);
+  }
+
+  .lightbox__prev {
+    left: clamp(0.75rem, 2vw, 2rem);
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .lightbox__next {
+    right: clamp(0.75rem, 2vw, 2rem);
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .lightbox__close {
+    top: clamp(0.75rem, 2vw, 2rem);
+    right: clamp(0.75rem, 2vw, 2rem);
+  }
+
+  @media (max-width: 1023px) {
+    .gallery__head {
+      grid-template-columns: 1fr;
+    }
+
+    .gallery__text {
+      justify-self: start;
+    }
+
+    .gallery__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-rows: clamp(140px, 24vw, 240px);
+    }
+  }
+
+  @media (max-width: 639px) {
+    .gallery__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 42vw;
+    }
+
+    .gallery__item--wide {
+      grid-column: span 2;
+    }
+
+    /* No toque não há hover: legenda sempre discreta */
+    .gallery__caption {
+      display: none;
+    }
+
+    .lightbox__prev,
+    .lightbox__next {
+      top: auto;
+      bottom: 1rem;
+      translate: none;
+    }
+
+    .lightbox__prev {
+      left: calc(50% - 3.75rem);
+    }
+
+    .lightbox__next {
+      right: calc(50% - 3.75rem);
+    }
+  }
+</style>
+
+<script>
+  import { initLightbox } from '@/scripts/lightbox';
+  initLightbox();
+</script>

@@ -1,0 +1,287 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { testimonials } from '@/data/content';
+---
+
+<section class="testimonials section texture-ink theme-dark" aria-labelledby="testimonials-title">
+  <div class="container testimonials__grid">
+    <div class="testimonials__summary">
+      <p class="eyebrow" data-reveal>Depoimentos</p>
+      <h2 id="testimonials-title" class="heading h-m" data-reveal style="--i: 1">
+        O que fica depois do <em>último</em> tempo
+      </h2>
+      <div class="rating" data-reveal style="--i: 2">
+        <p class="rating__value">4,9</p>
+        <div>
+          <p class="rating__stars" aria-label="Nota 4,9 de 5">
+            {[1, 2, 3, 4, 5].map(() => <Icon name="star" size={16} />)}
+          </p>
+          <p class="rating__caption">Média de 1.280 avaliações no Google e TripAdvisor</p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="quotes"
+      role="region"
+      aria-roledescription="carrossel"
+      aria-label="Depoimentos de clientes"
+      data-quotes
+    >
+      <div class="quotes__track" aria-live="off" data-quotes-track>
+        {
+          testimonials.map((t, i) => (
+            <figure
+              class:list={['quote', { 'is-active': i === 0 }]}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} de ${testimonials.length}`}
+              aria-hidden={i === 0 ? undefined : 'true'}
+              data-quote
+            >
+              <svg class="quote__mark" viewBox="0 0 48 36" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M0 36V22.6C0 9.9 6.4 2.4 19.2 0l2 4.6C14 6.5 10.6 10.4 10.3 16.4H19V36H0Zm29 0V22.6C29 9.9 35.4 2.4 48.2 0l2 4.6C43 6.5 39.6 10.4 39.3 16.4H48V36H29Z"
+                />
+              </svg>
+              <blockquote class="quote__text">
+                <p>{t.quote}</p>
+              </blockquote>
+              <figcaption class="quote__author">
+                <span class="quote__name">{t.author}</span>
+                <span class="quote__meta">
+                  {t.context} · via {t.source}
+                </span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+
+      <div class="quotes__controls">
+        <button type="button" class="quotes__btn" data-quotes-prev aria-label="Depoimento anterior">
+          <Icon name="chevron-left" size={20} />
+        </button>
+        <div class="quotes__dots" role="group" aria-label="Escolher depoimento">
+          {
+            testimonials.map((_, i) => (
+              <button
+                type="button"
+                class="quotes__dot"
+                aria-label={`Ver depoimento ${i + 1}`}
+                aria-current={i === 0 ? 'true' : undefined}
+                data-quotes-dot={i}
+              >
+                <span />
+              </button>
+            ))
+          }
+        </div>
+        <button type="button" class="quotes__btn" data-quotes-next aria-label="Próximo depoimento">
+          <Icon name="chevron-right" size={20} />
+        </button>
+        <button type="button" class="quotes__pause caps" data-quotes-pause aria-pressed="false">
+          Pausar
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(3rem, 8vw, 8rem);
+    align-items: center;
+  }
+
+  .testimonials__summary {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    margin-top: var(--space-l);
+    padding-top: var(--space-l);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .rating__value {
+    font-family: var(--font-display);
+    font-size: var(--step-6);
+    line-height: 1;
+    color: var(--brass-300);
+  }
+
+  .rating__stars {
+    display: flex;
+    gap: 0.2rem;
+    color: var(--brass-400);
+  }
+
+  .rating__stars :global(svg) {
+    fill: currentColor;
+  }
+
+  .rating__caption {
+    margin-top: 0.35rem;
+    max-width: 24ch;
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  /* Citações */
+  .quotes__track {
+    display: grid;
+  }
+
+  .quote {
+    grid-area: 1 / 1;
+    display: grid;
+    align-content: start;
+    gap: var(--space-l);
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(18px);
+    transition:
+      opacity 800ms var(--ease-out),
+      transform 800ms var(--ease-out),
+      visibility 0s linear 800ms;
+  }
+
+  .quote.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 150ms, 150ms, 0s;
+  }
+
+  .quote__mark {
+    width: 3rem;
+    color: var(--brass-400);
+  }
+
+  .quote__text {
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    font-style: italic;
+    line-height: 1.15;
+  }
+
+  .quote__author {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1rem;
+  }
+
+  .quote__name {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .quote__meta {
+    font-size: var(--step--1);
+    color: var(--color-fg-muted);
+  }
+
+  .quotes__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    margin-top: var(--space-xl);
+  }
+
+  .quotes__btn {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    transition:
+      background var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out);
+  }
+
+  .quotes__btn:hover {
+    background: var(--paper-100);
+    color: var(--ink-950);
+  }
+
+  .quotes__dots {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .quotes__dot {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.75rem;
+  }
+
+  .quotes__dot span {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--color-line);
+    overflow: hidden;
+  }
+
+  .quotes__dot span::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--brass-400);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .quotes__dot[aria-current='true'] span::after {
+    transform: scaleX(1);
+  }
+
+  .quotes[data-playing='true'] .quotes__dot[aria-current='true'] span::after {
+    animation: dot-progress var(--quote-duration, 8s) linear forwards;
+  }
+
+  @keyframes dot-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  .quotes__pause {
+    margin-left: auto;
+    padding: 0.6rem 0;
+    color: var(--color-fg-muted);
+  }
+
+  .quotes__pause:hover {
+    color: var(--paper-100);
+  }
+
+  @media (max-width: 1023px) {
+    .testimonials__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .quotes__dot {
+      width: 1.6rem;
+    }
+  }
+</style>
+
+<script>
+  import { initQuotes } from '@/scripts/quotes';
+  initQuotes();
+</script>
