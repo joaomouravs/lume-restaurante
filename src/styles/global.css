@@ -166,17 +166,6 @@ body::after {
   100% { transform: translate(0, 0); }
 }
 
-/* Transições nativas entre páginas (progressive enhancement) */
-@view-transition {
-  navigation: auto;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 450ms;
-  animation-timing-function: var(--ease-in-out);
-}
-
 /* ==========================================================================
    Layout
    ========================================================================== */

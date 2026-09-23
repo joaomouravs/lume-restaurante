@@ -15,7 +15,8 @@ export default defineConfig({
   trailingSlash: 'never',
   integrations: [sitemap()],
   prefetch: {
-    prefetchAll: false,
+    // Páginas pré-carregadas no hover: a cortina de transição cobre o tempo restante
+    prefetchAll: true,
     defaultStrategy: 'hover',
   },
   image: {

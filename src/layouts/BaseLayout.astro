@@ -7,6 +7,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import CursorImage from '@/components/ui/CursorImage.astro';
 import FloatingReserve from '@/components/ui/FloatingReserve.astro';
+import PageCurtain from '@/components/layout/PageCurtain.astro';
 import { site, schedule } from '@/data/site';
 
 import cormorantLatin from '@fontsource-variable/cormorant/files/cormorant-latin-wght-normal.woff2?url';
@@ -85,6 +86,12 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <script is:inline>
       document.documentElement.classList.replace('no-js', 'js');
+      // Chegada por transição: a página já nasce coberta pela cortina (ver scripts/transitions.ts)
+      try {
+        if (sessionStorage.getItem('lume:curtain') !== null && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('is-arriving');
+        }
+      } catch (e) {}
     </script>
 
     <title>{pageTitle}</title>
@@ -129,6 +136,7 @@ const jsonLd = {
     <Footer />
     <CursorImage />
     {floatingCta && <FloatingReserve />}
+    <PageCurtain />
 
     <script>
       import { initReveal } from '@/scripts/reveal';

@@ -1,0 +1,103 @@
+---
+/**
+ * Cortina de transição entre páginas (ver src/scripts/transitions.ts).
+ * Decorativa: não recebe foco nem é anunciada por leitores de tela.
+ */
+---
+
+<div class="page-curtain" aria-hidden="true" data-curtain>
+  <div class="page-curtain__inner">
+    <svg class="page-curtain__mark" viewBox="0 0 40 40" focusable="false">
+      <circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" stroke-width="1.1"></circle>
+      <path
+        d="M20 30.5c-3.6 0-6-2.4-6-5.7 0-3.9 4-5.8 4-9.4 2.6 1.4 3.7 3.4 3.7 5.5.9-.5 1.6-1.5 1.8-2.7 1.5 1.5 2.5 3.8 2.5 6.4 0 3.5-2.4 5.9-6 5.9Z"
+        fill="currentColor"></path>
+    </svg>
+    <span class="page-curtain__label" data-curtain-label></span>
+  </div>
+</div>
+
+<style is:global>
+  .page-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) + 5);
+    display: grid;
+    place-items: center;
+    background: var(--ink-950);
+    color: var(--paper-100);
+    pointer-events: none;
+    /* Escondida abaixo da tela */
+    clip-path: inset(100% 0 0 0);
+  }
+
+  .page-curtain__inner {
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 400ms var(--ease-out),
+      transform 500ms var(--ease-out);
+  }
+
+  .page-curtain__mark {
+    width: 3.25rem;
+    height: 3.25rem;
+    color: var(--brass-400);
+  }
+
+  .page-curtain__label {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.4rem + 3vw, 3.5rem);
+    font-style: italic;
+    line-height: 1;
+  }
+
+  /* Saindo: a cortina sobe e cobre a página */
+  html.is-leaving .page-curtain {
+    pointer-events: auto;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 520ms var(--ease-in-out);
+  }
+
+  html.is-leaving .page-curtain__inner {
+    opacity: 1;
+    transform: none;
+    transition-delay: 200ms;
+  }
+
+  /* Chegando: a página nasce coberta… */
+  html.is-arriving .page-curtain {
+    clip-path: inset(0 0 0 0);
+    /* Trava de segurança: se o script não carregar, a cortina se abre sozinha */
+    animation: curtain-failsafe 600ms var(--ease-in-out) 2.5s forwards;
+  }
+
+  @keyframes curtain-failsafe {
+    to { clip-path: inset(0 0 100% 0); }
+  }
+
+  html.is-arriving .page-curtain__inner {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* …e a cortina se abre para cima */
+  html.is-arriving.is-revealing .page-curtain {
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 700ms var(--ease-in-out) 120ms;
+  }
+
+  html.is-arriving.is-revealing .page-curtain__inner {
+    opacity: 0;
+    transform: translateY(-16px);
+    transition-duration: 300ms;
+  }
+</style>
+
+<script>
+  import { initTransitions } from '@/scripts/transitions';
+  initTransitions();
+</script>
