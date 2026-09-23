@@ -334,6 +334,11 @@ const items = await Promise.all(
   }
 
   @media (max-width: 639px) {
+    .gallery__head {
+      gap: var(--space-m);
+      margin-bottom: var(--space-xl);
+    }
+
     .gallery__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-auto-rows: 42vw;

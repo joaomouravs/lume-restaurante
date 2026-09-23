@@ -11,7 +11,7 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
       <Media
         src={chefPortrait}
         alt="Chef Rafael Amaral finalizando um prato com pinça sob luminárias de cobre"
-        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 86vw"
+        sizes="(min-width: 1024px) 30vw, 90vw"
         widths={[420, 640, 900, 1200]}
         position="50% 30%"
       />
@@ -174,7 +174,8 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
   .chef__banner-caption {
     position: absolute;
     left: var(--gutter);
-    bottom: var(--space-l);
+    /* A seção seguinte sobe sobre a faixa (overlap-up + curva): a legenda fica acima dela */
+    bottom: calc(var(--curve) + var(--space-m));
     color: rgb(243 238 230 / 0.8);
   }
 
@@ -228,10 +229,42 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
     }
   }
 
+  /* Tablet: retrato na largura toda (sem vazio à direita) e palavras centralizadas,
+     como no celular — no layout desktop "& alma" some atrás da curva seguinte */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .chef__portrait {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+    }
+
+    .chef__portrait :global(img) {
+      object-position: 50% 28% !important;
+    }
+
+    .chef__words {
+      justify-content: center;
+      gap: 1rem;
+      font-size: 15vw;
+      text-shadow: 0 2px 28px rgb(11 10 9 / 0.55);
+    }
+
+    .chef__word--1,
+    .chef__word--2 {
+      translate: 0;
+      animation: none;
+    }
+
+    .chef__banner-img::after {
+      background:
+        linear-gradient(270deg, rgb(11 10 9 / 0.7) 0%, rgb(11 10 9 / 0) 50%),
+        linear-gradient(180deg, var(--ink-950) 0%, rgb(11 10 9 / 0.25) 30%, rgb(11 10 9 / 0.2) 70%, rgb(11 10 9 / 0.85) 100%);
+    }
+  }
+
   @media (max-width: 639px) {
     .chef__banner-caption {
       right: var(--gutter);
-      bottom: var(--space-m);
+      bottom: calc(var(--curve) + var(--space-s));
       font-size: 0.68rem;
     }
 
@@ -241,12 +274,43 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
       font-size: 18vw;
     }
 
-    .chef__word--1 {
-      translate: 0;
+    /* Enquadramento próprio: chamas atrás das palavras, dólmã branco fora do texto */
+    .chef__banner-img :global(img) {
+      object-position: 22% 45% !important;
     }
 
+    .chef__words {
+      text-shadow: 0 2px 28px rgb(11 10 9 / 0.55);
+    }
+
+    /* Em 430–639px o dólmã branco volta a entrar pela direita, atrás de "& alma":
+       véu lateral só daquele lado */
+    .chef__banner-img::after {
+      background:
+        linear-gradient(270deg, rgb(11 10 9 / 0.7) 0%, rgb(11 10 9 / 0) 50%),
+        linear-gradient(180deg, var(--ink-950) 0%, rgb(11 10 9 / 0.25) 30%, rgb(11 10 9 / 0.2) 70%, rgb(11 10 9 / 0.85) 100%);
+    }
+
+    /* Sem deslize lateral no celular: as palavras ficariam cortadas nas bordas */
+    .chef__word--1,
     .chef__word--2 {
       translate: 0;
+      animation: none;
+    }
+
+    /* Citação mais leve: 5 linhas em vez de 7 */
+    .chef__quote {
+      font-size: var(--step-3);
+      line-height: 1.18;
+    }
+
+    .chef__text {
+      gap: var(--space-m);
+    }
+
+    .chef__banner {
+      margin-top: var(--space-2xl);
+      height: clamp(380px, 64svh, 540px);
     }
   }
 </style>

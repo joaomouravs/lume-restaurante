@@ -133,6 +133,14 @@ const { eyebrow, image, imagePosition = 'center', breadcrumb, compact = false } 
     color: rgb(243 238 230 / 0.78);
   }
 
+  /* No celular o texto cobre quase toda a foto: véu mais denso para leitura */
+  @media (max-width: 639px) {
+    .page-hero__bg::after {
+      background:
+        linear-gradient(180deg, rgb(11 10 9 / 0.78) 0%, rgb(11 10 9 / 0.55) 45%, rgb(11 10 9 / 0.9) 100%);
+    }
+  }
+
   /* Entrada */
   .page-hero__inner > * {
     opacity: 0;

@@ -350,6 +350,14 @@ const socialIcons = { Instagram: 'instagram', Spotify: 'spotify', TripAdvisor: '
     }
   }
 
+  /* Tablet: manifesto e newsletter lado a lado (sem vazio à direita) */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .footer__top {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
   /* Telas de toque: links com área mínima de 44px */
   @media (pointer: coarse) {
     .footer__list {
@@ -370,13 +378,39 @@ const socialIcons = { Instagram: 'instagram', Spotify: 'spotify', TripAdvisor: '
   }
 
   @media (max-width: 560px) {
+    .footer__top {
+      gap: var(--space-l);
+      padding-bottom: var(--space-xl);
+    }
+
+    .footer__statement {
+      font-size: var(--step-2);
+    }
+
+    .footer__logo {
+      margin-bottom: var(--space-m);
+    }
+
     .footer__grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-xl);
+      padding-block: var(--space-xl);
+    }
+
+    /* Navegação em duas colunas: rodapé bem mais curto no celular */
+    nav .footer__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-m);
+    }
+
+    .footer__caption {
+      margin-bottom: var(--space-s);
     }
 
     .footer__bottom {
       flex-direction: column;
       align-items: flex-start;
+      gap: var(--space-xs);
     }
   }
 </style>

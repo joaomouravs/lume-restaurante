@@ -181,6 +181,21 @@ const times = ['12h30', '13h00', '13h30', '19h00', '19h30', '20h00', '20h30', '2
     cursor: pointer;
   }
 
+  /* Um único ícone de calendário: o indicador nativo vira uma área invisível
+     sobre o campo inteiro (tocar em qualquer ponto abre o seletor de data) */
+  .quick-reserve input[type='date'] {
+    position: relative;
+  }
+
+  .quick-reserve input[type='date']::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    opacity: 0;
+    cursor: pointer;
+  }
+
   .quick-reserve input:focus-visible,
   .quick-reserve select:focus-visible {
     outline: none;

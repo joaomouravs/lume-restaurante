@@ -236,7 +236,15 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, sh
             <ul role="list" class="aside-card__list">
               <li><Icon name="clock" size={18} /> Tolerância de 15 minutos após o horário marcado.</li>
               <li><Icon name="calendar" size={18} /> Agenda aberta com 30 dias de antecedência.</li>
-              <li><Icon name="users" size={18} /> Grupos acima de 8 pessoas: {site.contact.events}</li>
+              <li>
+                <Icon name="users" size={18} />
+                <span>
+                  Grupos acima de 8 pessoas:{' '}
+                  <a href={`mailto:${site.contact.events}`} class="aside-card__mail">
+                    {site.contact.events.split('@')[0]}<wbr />@{site.contact.events.split('@')[1]}
+                  </a>
+                </span>
+              </li>
               <li><Icon name="car" size={18} /> {site.address.parking}</li>
             </ul>
             <h3 class="caps aside-card__caption">Horários</h3>
@@ -251,7 +259,7 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, sh
               }
             </ul>
             <a href={site.contact.whatsappHref} class="btn btn--light btn--sm btn--block" target="_blank" rel="noopener">
-              Prefere falar conosco? WhatsApp
+              <Icon name="whatsapp" size={18} /> Falar pelo WhatsApp
             </a>
           </div>
         </div>
@@ -490,6 +498,7 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, sh
 
   .exp-option__box {
     display: grid;
+    align-content: start;
     gap: 0.35rem;
     height: 100%;
     padding: 1.1rem;
@@ -855,6 +864,13 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, sh
     overflow-wrap: anywhere;
   }
 
+  .aside-card__mail {
+    color: var(--paper-100);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 0.2em;
+  }
+
   .aside-card__list :global(svg) {
     margin-top: 0.15rem;
     color: var(--brass-400);
@@ -908,6 +924,12 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, sh
       grid-template-columns: 1fr;
     }
 
+    /* Campos empilhados: ritmo vertical único e mais curto entre eles */
+    .rform__step,
+    .rform__row {
+      gap: var(--space-m);
+    }
+
     .summary :global(div:nth-child(odd)) {
       border-right: 0;
     }
@@ -916,8 +938,14 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, sh
       display: none;
     }
 
+    /* A etapa atual ganha mais espaço: rótulo sempre em uma linha */
+    .steps__item.is-current {
+      flex: 2.4;
+    }
+
     .steps__item.is-current .steps__label {
       display: inline;
+      white-space: nowrap;
     }
 
     .rform__actions {
@@ -926,6 +954,16 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, sh
 
     .rform__actions .btn {
       width: 100%;
+    }
+  }
+
+  @media (max-width: 374px) {
+    .exp-options {
+      gap: 0.5rem;
+    }
+
+    .exp-option__box {
+      padding: 0.9rem 0.85rem;
     }
   }
 </style>

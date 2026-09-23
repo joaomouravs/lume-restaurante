@@ -199,37 +199,97 @@ import tableWine from '@/assets/images/table-wine.jpg';
       max-width: 38rem;
       margin-top: var(--space-l);
     }
+  }
 
-    .about__stats {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .about__stats li:nth-child(3) {
-      padding-left: 0;
-      border-left: 0;
-    }
-
-    .about__stats li:nth-child(n + 3) {
-      margin-top: var(--space-l);
-      border-top: 1px solid var(--color-line);
+  /* Tablet: os quatro números cabem lado a lado, com valores um pouco menores */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .about__stat-value {
+      font-size: var(--step-5);
     }
   }
 
-  @media (max-width: 559px) {
+  @media (max-width: 639px) {
+    /* Números em 2×2: bordas explícitas por posição, sem herdar regras do desktop */
+    .about__stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-top: 0;
+    }
+
+    /* Mesmo formato de seletor da regra desktop (li + li): o escopo do Astro
+       adiciona um atributo por elemento, então a especificidade precisa acompanhar */
+    .about__stats li,
+    .about__stats li + li {
+      margin: 0;
+      padding: var(--space-l) var(--space-m) var(--space-l) 0;
+      border-top: 1px solid var(--color-line);
+      border-left: 0;
+    }
+
+    .about__stats li + li:nth-child(even) {
+      padding-left: var(--space-m);
+      border-left: 1px solid var(--color-line);
+    }
+  }
+
+  @media (max-width: 639px) {
+    .about {
+      padding-bottom: calc(var(--section-y) + var(--curve) * 0.3);
+    }
+
+    /* Manifesto mais contido: 4–5 linhas em vez de 6 */
+    .about__statement {
+      font-size: var(--step-4);
+      line-height: 1.12;
+    }
+
+    .about__body {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: var(--space-2xl);
+    }
+
+    .about__img--small,
+    .about__img--tall {
+      grid-column: auto;
+      aspect-ratio: 3 / 4;
+      align-self: start;
+    }
+
+    /* Escalonamento: a foto menor desce um pouco, criando ritmo editorial */
+    .about__img--small {
+      margin-top: var(--space-xl);
+      align-self: start;
+    }
+
+    .about__text {
+      margin-top: var(--space-xl);
+    }
+
     .about__caption {
       display: none;
     }
 
-    .about__stats li {
+    .about__stats {
+      margin-top: var(--space-2xl);
+    }
+
+    .about__stats li,
+    .about__stats li + li {
       padding-right: var(--space-s);
     }
 
-    .about__stats li + li {
+    .about__stats li + li:nth-child(even) {
       padding-left: var(--space-s);
     }
 
-    .about__stats li:nth-child(3) {
-      padding-left: 0;
+    .about__stat-value {
+      font-size: var(--step-5);
+    }
+  }
+
+  @media (max-width: 374px) {
+    .about__statement {
+      font-size: 1.9rem;
     }
   }
 </style>
