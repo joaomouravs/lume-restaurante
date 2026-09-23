@@ -94,13 +94,19 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
 <style>
   .hero {
     --split: 48%;
+    --split-cq: 48cqw;
     --radius: clamp(120px, 16vw, 300px);
-    --plate: clamp(280px, min(30vw, 54vh), 540px);
+    --plate: clamp(280px, min(30cqw, 50svh), 540px);
+    /* Borda esquerda do .container (cqw = largura do hero, sem a barra de rolagem) */
+    --edge: max(var(--gutter), (100cqw - var(--container)) / 2);
+    container-type: inline-size;
     position: relative;
     display: grid;
     grid-template-columns: var(--split) 1fr;
     height: max(680px, 100svh);
-    max-height: 1100px;
+    /* O hero fica fixado (GSAP) durante a abertura da mídia: se for mais baixo que a tela,
+       aparece uma faixa vazia embaixo. 1440px cobre monitores 1440p/1600p */
+    max-height: 1440px;
     background: var(--paper-100);
     isolation: isolate;
     overflow: hidden;
@@ -113,7 +119,7 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
     flex-direction: column;
     justify-content: space-between;
     gap: var(--space-xl);
-    padding: calc(var(--header-h) + clamp(1.5rem, 4vw, 4rem)) var(--gutter) clamp(2.5rem, 5vw, 4.5rem);
+    padding: calc(var(--header-h) + clamp(1.5rem, 4vw, 4rem)) var(--gutter) clamp(2.5rem, 5vw, 4.5rem) var(--edge);
   }
 
   .hero__bottom {
@@ -131,7 +137,9 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
   .hero__title {
     position: relative;
     z-index: 4;
-    font-size: clamp(3.4rem, 1.2rem + 7.2vw, 9.25rem);
+    /* Proporcional à coluna de texto (a linha mais longa, "do fogo,", mede ~4,3em)
+       e à altura da tela: nunca invade o prato, nem em notebooks baixos */
+    font-size: max(3.4rem, min(calc((var(--split-cq) - var(--edge) - var(--gutter)) / 4.6), 15.5svh, 9.25rem));
     line-height: 0.88;
   }
 
@@ -245,7 +253,7 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
 
   .hero__controls {
     position: absolute;
-    right: var(--gutter);
+    right: var(--edge);
     bottom: clamp(2rem, 4vw, 3.5rem);
     display: flex;
     align-items: center;

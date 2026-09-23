@@ -50,7 +50,7 @@ import { experiences } from '@/data/content';
               <Media
                 src={exp.image}
                 alt={exp.imageAlt}
-                sizes="(min-width: 1024px) 30vw, 90vw"
+                sizes="(min-width: 1024px) 42vw, 90vw"
                 widths={[480, 720, 960, 1200]}
               />
             </div>
@@ -101,7 +101,8 @@ import { experiences } from '@/data/content';
 
   .experiences__grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    /* O palco (foto) é o protagonista: coluna maior que a lista */
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
     gap: clamp(3rem, 7vw, 7rem);
     align-items: center;
   }
@@ -163,17 +164,17 @@ import { experiences } from '@/data/content';
     opacity: 1;
   }
 
-  /* Palco: imagem + painel */
+  /* Palco: foto grande em paisagem, painel logo abaixo (em todas as larguras) */
   .experiences__stage {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-l);
     align-items: end;
   }
 
   .experiences__media {
     position: relative;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 16 / 11;
     overflow: hidden;
     border-radius: var(--radius-m);
     background: var(--ink-800);
@@ -237,34 +238,20 @@ import { experiences } from '@/data/content';
   }
 
   .exp-panel__desc {
+    max-width: 52ch;
     color: var(--color-fg-muted);
   }
 
   .exp-panel__index {
-    margin-top: var(--space-l);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(5rem, 3rem + 7vw, 10rem);
+    font-size: clamp(4rem, 2rem + 6vw, 7rem);
     line-height: 0.8;
     color: transparent;
     -webkit-text-stroke: 1px rgb(207 174 124 / 0.35);
-  }
-
-  @media (max-width: 1199px) {
-    .experiences__stage {
-      grid-template-columns: 1fr;
-    }
-
-    .experiences__media {
-      aspect-ratio: 16 / 11;
-    }
-
-    .exp-panel__index {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      margin: 0;
-      font-size: clamp(4rem, 2rem + 6vw, 7rem);
-    }
   }
 
   @media (max-width: 1023px) {

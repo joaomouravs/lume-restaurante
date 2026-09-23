@@ -31,7 +31,7 @@ const items = await Promise.all(
     <ul class="gallery__grid" role="list" data-gallery>
       {
         items.map((item, i) => (
-          <li class:list={['gallery__item', `gallery__item--${item.layout}`, item.mobileLayout && `gallery__item--m-${item.mobileLayout}`]} data-reveal="scale" style={`--i: ${i % 4}`}>
+          <li class:list={['gallery__item', `gallery__item--${item.layout}`, item.mobileLayout && `gallery__item--m-${item.mobileLayout}`, item.desktopLayout && `gallery__item--d-${item.desktopLayout}`]} data-reveal="scale" style={`--i: ${i % 4}`}>
             <button
               type="button"
               class="gallery__btn"
@@ -47,7 +47,7 @@ const items = await Promise.all(
                 sizes={
                   item.layout === 'wide'
                     ? '(min-width: 1024px) 46vw, (min-width: 640px) 64vw, 100vw'
-                    : '(min-width: 1024px) 23vw, (min-width: 640px) 32vw, 50vw'
+                    : `(min-width: 1024px) ${item.desktopLayout === 'wide' ? 46 : 23}vw, (min-width: 640px) 32vw, 50vw`
                 }
                 widths={[360, 540, 720, 1080]}
               />
@@ -124,6 +124,12 @@ const items = await Promise.all(
 
   .gallery__item--wide {
     grid-column: span 2;
+  }
+
+  @media (min-width: 1024px) {
+    .gallery__item--d-wide {
+      grid-column: span 2;
+    }
   }
 
   .gallery__btn {

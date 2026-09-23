@@ -144,7 +144,9 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
     content: '';
     position: absolute;
     inset: 0;
+    /* Véu lateral: "& alma" termina sobre o dólmã branco do cozinheiro */
     background:
+      linear-gradient(270deg, rgb(11 10 9 / 0.5) 0%, rgb(11 10 9 / 0) 40%),
       linear-gradient(180deg, var(--ink-950) 0%, rgb(11 10 9 / 0.25) 30%, rgb(11 10 9 / 0.2) 70%, rgb(11 10 9 / 0.85) 100%);
   }
 
@@ -154,7 +156,9 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding-inline: var(--gutter);
+    /* Palavras na grade do site: "Fogo" nasce na borda do conteúdo, "& alma" termina nela,
+       sempre acima da curva da seção seguinte e da legenda */
+    padding: 0 max(var(--gutter), (100% - var(--container)) / 2) calc(var(--curve) + var(--space-2xl));
     font-size: clamp(5rem, 1rem + 17vw, 20rem);
     line-height: 0.8;
     pointer-events: none;
@@ -168,12 +172,11 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
     align-self: flex-end;
     font-style: italic;
     color: var(--brass-300);
-    translate: 0 12%;
   }
 
   .chef__banner-caption {
     position: absolute;
-    left: var(--gutter);
+    left: max(var(--gutter), (100% - var(--container)) / 2);
     /* A seção seguinte sobe sobre a faixa (overlap-up + curva): a legenda fica acima dela */
     bottom: calc(var(--curve) + var(--space-m));
     color: rgb(243 238 230 / 0.8);
