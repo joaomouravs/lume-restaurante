@@ -20,7 +20,7 @@ npm run photos    # reaplica o tratamento de cor às fotos (photos/originals →
 
 | Rota        | Conteúdo |
 |-------------|----------|
-| `/`         | Hero com vídeo da brasa e transição ao rolar, manifesto, pratos assinatura, chef, prévia do cardápio, jornada do Menu Fogo (rolagem horizontal fixada), experiências, galeria, depoimentos, visite e reserva rápida |
+| `/`         | Hero com vídeo da brasa e transição ao rolar, manifesto, pratos assinatura, chef, mapa dos produtores, prévia do cardápio, jornada do Menu Fogo (rolagem horizontal fixada), experiências, galeria, depoimentos, visite e reserva rápida |
 | `/cardapio` | Cardápio completo com navegação fixa (scroll-spy), filtros alimentares, Menu Fogo e informações úteis |
 | `/reservas` | Reserva em 3 etapas com horários gerados a partir do funcionamento real, validação acessível, resumo e exportação `.ics` |
 | `404`       | Página de erro no mesmo tom visual |
@@ -31,6 +31,7 @@ npm run photos    # reaplica o tratamento de cor às fotos (photos/originals →
 photos/originals/         # fotos originais, sem tratamento (fonte do `npm run photos`)
 public/video/             # vídeo do hero (1280 e 720 px, H.264)
 scripts/grade-photos.mjs  # direção de arte: tratamento de cor único para todas as fotos
+scripts/build-map.mjs     # gera o mapa do Brasil (Natural Earth) usado na seção de produtores
 src/
 ├── assets/images/        # fotos já tratadas (otimizadas no build)
 ├── components/
@@ -53,7 +54,9 @@ src/
 - **Fontes**: Cormorant (display) e Manrope (texto), servidas pelo próprio site via Fontsource, com preload do subset latino.
 - **Direção de arte**: todas as fotos passam pela mesma receita de cor (`scripts/grade-photos.mjs`: saturação contida, balanço quente, sombras âmbar e vinheta; ajustes por foto em `OVERRIDES`). O grão de filme é aplicado via CSS para não pesar nos arquivos. Para trocar uma foto, coloque o original em `photos/originals/` com o mesmo nome e rode `npm run photos`.
 - **Vídeo do hero**: loop de 8 s sem emenda (crossfade do fim para o início), tratado com a mesma paleta. Carrega só depois da página (`load` + ocioso), nunca com Save-Data ou movimento reduzido, pausa fora da tela e tem botão de pausa. A capa (`hero-fire-poster.jpg`) é o primeiro quadro do loop.
-- **Movimento** (`src/scripts/motion.ts`): GSAP + ScrollTrigger + SplitText e rolagem suave com Lenis (apenas mouse/trackpad). Transição do hero, jornada horizontal fixada, títulos revelados palavra por palavra e foto que segue o cursor no cardápio. Com `prefers-reduced-motion`, nada disso é ativado: o site mantém revelações simples em CSS, rolagem nativa e a jornada vira um carrossel de deslizar. Transições entre páginas usam `@view-transition`.
+- **Movimento** (`src/scripts/motion.ts`): GSAP + ScrollTrigger + SplitText e rolagem suave com Lenis (apenas mouse/trackpad). Transição do hero, jornada horizontal fixada, títulos revelados palavra por palavra e foto que segue o cursor no cardápio. Com `prefers-reduced-motion`, nada disso é ativado: o site mantém revelações simples em CSS, rolagem nativa e a jornada vira um carrossel de deslizar.
+- **Mapa dos produtores** (`src/data/producers.ts`): pontos, rotas em arco até a cozinha e distâncias calculados no build a partir de latitude/longitude, sobre um mapa gerado de dados do Natural Earth (domínio público). Para adicionar um produtor, inclua-o em `producers.ts` com as coordenadas do município. A lista de produtores é o controle acessível principal; os pontos do mapa são um atalho para mouse e toque.
+- **Transição entre páginas** (`src/scripts/transitions.ts`): cortina com o logo ao sair de uma página e ao chegar na seguinte, com pré-carregamento das páginas no hover. Âncoras, links externos, nova aba e movimento reduzido seguem a navegação comum; uma trava em CSS abre a cortina sozinha se o JavaScript falhar.
 - **Acessibilidade**: link para pular ao conteúdo, landmarks, abas WAI-ARIA com navegação por setas, menu com foco preso e fechamento por Esc, lightbox em `<dialog>`, carrossel de depoimentos pausável, erros de formulário associados aos campos e contraste AA.
 - **SEO**: title e description por página, canonical, Open Graph e Twitter Cards, JSON-LD `Restaurant` com horários, `sitemap-index.xml` e `robots.txt`.
 
