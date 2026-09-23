@@ -447,6 +447,49 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
     }
   }
 
+  /* Tablet em pé (640–1023px): prato e foto menores para o título entrar na primeira tela */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .hero {
+      --plate: clamp(220px, 34vw, 340px);
+      --media-h: clamp(360px, 46svh, 540px);
+    }
+
+    .hero__text {
+      padding-top: calc(var(--plate) * 0.42 + var(--space-m));
+      padding-bottom: var(--space-2xl);
+    }
+
+    .hero__title {
+      font-size: clamp(4.5rem, 1rem + 9vw, 6.5rem);
+    }
+
+    .hero__plate {
+      top: calc(var(--media-h) - var(--plate) * 0.58);
+    }
+  }
+
+  /* Celular: foto e prato mais contidos, para título, texto e reserva caberem na primeira tela */
+  @media (max-width: 639px) {
+    .hero {
+      --plate: clamp(160px, 44vw, 250px);
+      --media-h: clamp(290px, 46svh, 420px);
+    }
+
+    .hero__text {
+      gap: var(--space-m);
+      padding-top: calc(var(--plate) * 0.42 + var(--space-m));
+      padding-bottom: var(--space-xl);
+    }
+
+    .hero__title {
+      font-size: clamp(3rem, 0.9rem + 10.5vw, 4.5rem);
+    }
+
+    .hero__plate {
+      top: calc(var(--media-h) - var(--plate) * 0.58);
+    }
+  }
+
   /* Celular: ação principal em largura total, cardápio logo abaixo */
   @media (max-width: 639px) {
     .hero__actions {

@@ -629,6 +629,12 @@ const total = String(points.length).padStart(2, '0');
       order: 2;
       margin-top: 0;
     }
+
+    /* Tablet: mapa não passa de ~36rem, para a lista e o cartão aparecerem junto dele */
+    .producers__map {
+      width: min(100%, 36rem);
+      margin-inline: auto;
+    }
   }
 
   @media (max-width: 559px) {

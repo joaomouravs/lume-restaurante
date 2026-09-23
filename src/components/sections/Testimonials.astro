@@ -270,14 +270,51 @@ import { testimonials } from '@/data/content';
   }
 
   @media (max-width: 1023px) {
+    /* minmax(0, 1fr): a coluna nunca cresce além da tela por causa do conteúdo */
     .testimonials__grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-2xl);
+    }
+  }
+
+  @media (max-width: 639px) {
+    .quote__text {
+      font-size: var(--step-3);
+      line-height: 1.2;
+    }
+
+    .quote {
+      gap: var(--space-m);
+    }
+
+    .quote__mark {
+      width: 2.25rem;
+    }
+
+    .rating__value {
+      font-size: var(--step-5);
+    }
+
+    .quotes__controls {
+      flex-wrap: wrap;
+      margin-top: var(--space-l);
     }
   }
 
   @media (max-width: 479px) {
     .quotes__dot {
       width: 1.6rem;
+    }
+  }
+
+  /* 320–374px: setas, marcadores e "Pausar" numa única linha */
+  @media (max-width: 374px) {
+    .quotes__controls {
+      gap: 0.5rem;
+    }
+
+    .quotes__dot {
+      width: 1.25rem;
     }
   }
 </style>

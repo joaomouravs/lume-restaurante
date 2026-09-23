@@ -537,6 +537,13 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
       padding-inline: var(--gutter);
     }
 
+    /* Esmaecimento na borda direita: sinaliza que há mais categorias/filtros */
+    .menu-bar__nav,
+    .menu-bar__filters {
+      -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+      mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+    }
+
     .menu-bar__nav::-webkit-scrollbar,
     .menu-bar__filters::-webkit-scrollbar {
       display: none;
@@ -552,8 +559,9 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
       position: static;
     }
 
+    /* minmax(0, 1fr): títulos longos ("Sobremesas") nunca empurram a capa para fora */
     .menu-cat__sticky {
-      grid-template-columns: 1fr auto;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: end;
     }
 
@@ -587,8 +595,33 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
       grid-template-columns: 1fr;
     }
 
+    /* Ícone ao lado do texto: lista mais compacta em uma coluna */
+    .menu-info__list li {
+      grid-template-columns: 22px minmax(0, 1fr);
+      column-gap: var(--space-s);
+      align-items: start;
+    }
+
+    .menu-info__list :global(svg) {
+      margin-top: 0.1rem;
+    }
+
+    .tasting__list li {
+      grid-template-columns: 2.5rem minmax(0, 1fr);
+    }
+
     .tasting__facts dd {
       font-size: var(--step-2);
+    }
+  }
+
+  @media (max-width: 479px) {
+    .menu-cat__sticky {
+      column-gap: var(--space-s);
+    }
+
+    .menu-cat__cover {
+      width: clamp(76px, 24vw, 104px);
     }
   }
 </style>

@@ -55,7 +55,10 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
             {
               schedule.map((d) => (
                 <tr data-day={d.day}>
-                  <th scope="row">{d.name}</th>
+                  <th scope="row">
+                    <span class="day-long">{d.name}</span>
+                    <span class="day-short" aria-hidden="true">{d.short}</span>
+                  </th>
                   <td>
                     {d.shifts.length
                       ? d.shifts.map((s) => (
@@ -346,9 +349,13 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
     color: var(--color-fg-muted);
   }
 
+  .day-short {
+    display: none;
+  }
+
   @media (max-width: 1023px) {
     .visit__grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .visit__map {
@@ -377,6 +384,35 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
     .hours__shift {
       display: block;
       margin-left: 0;
+    }
+
+    .visit__blocks {
+      margin-top: var(--space-s);
+      gap: var(--space-l);
+    }
+
+    .hours {
+      margin-top: var(--space-m);
+    }
+  }
+
+  /* 320–374px: dias abreviados na tabela (leitores de tela seguem com o nome completo) */
+  @media (max-width: 374px) {
+    .hours {
+      padding: 1.1rem 1rem;
+    }
+
+    .day-long {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    .day-short {
+      display: inline;
     }
   }
 </style>
