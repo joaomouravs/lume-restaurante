@@ -75,7 +75,8 @@
 
   --section-y: clamp(5rem, 3.2rem + 8vw, 10rem);
   --gutter: clamp(1.25rem, 0.6rem + 2.8vw, 3.5rem);
-  --container: 1320px;
+  /* Grade única do site: 1320px até 1920px e cresce devagar em telas ultrawide (1560px em 2560px) */
+  --container: clamp(1320px, 37.5vw + 600px, 1560px);
   --container-narrow: 880px;
 
   /* --- Forma --- */

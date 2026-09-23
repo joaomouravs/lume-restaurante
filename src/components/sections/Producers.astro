@@ -524,9 +524,10 @@ const total = String(points.length).padStart(2, '0');
     min-width: 0;
   }
 
+  /* Desktop: grade regular (colunas iguais) em vez de "pílulas" com quebra irregular */
   .producers__list {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
     gap: 0.5rem;
     margin: 0;
     padding-top: var(--space-l);
@@ -545,6 +546,18 @@ const total = String(points.length).padStart(2, '0');
       background var(--dur-base) var(--ease-out),
       border-color var(--dur-base) var(--ease-out),
       color var(--dur-base) var(--ease-out);
+  }
+
+  @media (min-width: 1024px) {
+    .producer-chip {
+      width: 100%;
+      height: 100%;
+      align-content: center;
+    }
+
+    .producers__list .producer-chip__name {
+      white-space: normal;
+    }
   }
 
   .producer-chip:hover {
@@ -607,6 +620,7 @@ const total = String(points.length).padStart(2, '0');
 
     .producers__list {
       order: 1;
+      display: flex;
       flex-wrap: nowrap;
       overflow-x: auto;
       margin-inline: calc(var(--gutter) * -1);

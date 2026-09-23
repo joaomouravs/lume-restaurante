@@ -108,6 +108,8 @@ export type GalleryItem = {
   layout: 'tall' | 'wide' | 'square';
   /** Formato na grade de 2 colunas do celular, quando diferente (evita vãos) */
   mobileLayout?: 'wide';
+  /** Formato na grade de 4 colunas do desktop, quando diferente (fecha o mosaico sem vão) */
+  desktopLayout?: 'wide';
 };
 
 export const gallery: GalleryItem[] = [
@@ -119,7 +121,7 @@ export const gallery: GalleryItem[] = [
   { image: wineGrapes, alt: 'Taça de vinho tinto ao lado de cachos de uva', caption: 'Adega', layout: 'square' },
   { image: roomDining, alt: 'Cliente servindo-se à mesa em ambiente de luz baixa', caption: 'À mesa', layout: 'wide' },
   { image: chefKitchen, alt: 'Cozinheiro finalizando pratos na cozinha aberta', caption: 'Cozinha aberta', layout: 'square' },
-  { image: roomBar, alt: 'Balcão de bar com prateleiras de garrafas', caption: 'Balcão', layout: 'square', mobileLayout: 'wide' },
+  { image: roomBar, alt: 'Balcão de bar com prateleiras de garrafas', caption: 'Balcão', layout: 'square', mobileLayout: 'wide', desktopLayout: 'wide' },
   { image: roomTable, alt: 'Prato servido em mesa com taças de cristal', caption: 'Serviço', layout: 'wide' },
 ];
 

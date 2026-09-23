@@ -19,6 +19,9 @@ const { variant = 'dark' } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const previews = [roomWarm, dishAncho, chefPlating, roomBarLights, facadeNight];
+
+// Links visíveis no header a partir de 1280px (abaixo disso, só "Cardápio")
+const quickLinks = navigation.filter((item) => item.label !== 'Galeria');
 ---
 
 <header class="site-header" data-header data-variant={variant}>
@@ -40,11 +43,23 @@ const previews = [roomWarm, dishAncho, chefPlating, roomBarLights, facadeNight];
     </div>
 
     <div class="site-header__right">
-      <a
-        href="/cardapio"
-        class="site-header__link"
-        aria-current={currentPath === '/cardapio' ? 'page' : undefined}>Cardápio</a
-      >
+      <nav class="site-header__nav" aria-label="Navegação rápida">
+        <ul role="list">
+          {
+            quickLinks.map((item) => (
+              <li class:list={{ 'is-wide': item.href !== '/cardapio' }}>
+                <a
+                  href={item.href}
+                  class="site-header__link"
+                  aria-current={currentPath === item.href ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
       <a href="/reservas" class="btn btn--sm btn--light site-header__cta">
         <span class="cta-long">Reservar mesa</span>
         <span class="cta-short">Reservar</span>
@@ -161,7 +176,8 @@ const previews = [roomWarm, dishAncho, chefPlating, roomBarLights, facadeNight];
     justify-content: space-between;
     gap: var(--space-m);
     height: 100%;
-    padding-inline: var(--gutter);
+    /* Mesma borda do .container: logo e CTA alinhados ao conteúdo das seções */
+    padding-inline: max(var(--gutter), (100% - var(--container)) / 2);
   }
 
   .site-header__left,
@@ -180,8 +196,26 @@ const previews = [roomWarm, dishAncho, chefPlating, roomBarLights, facadeNight];
     font-size: 1.55rem;
   }
 
+  .site-header__nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.25rem, 1.8vw, 2.25rem);
+    margin: 0;
+  }
+
+  .site-header__nav .is-wide {
+    display: none;
+  }
+
+  @media (min-width: 1280px) {
+    .site-header__nav .is-wide {
+      display: block;
+    }
+  }
+
   .site-header__link {
     position: relative;
+    display: inline-block;
     font-size: var(--step--2);
     font-weight: 600;
     letter-spacing: var(--tracking-caps);
@@ -224,7 +258,7 @@ const previews = [roomWarm, dishAncho, chefPlating, roomBarLights, facadeNight];
   }
 
   @media (max-width: 767px) {
-    .site-header__link {
+    .site-header__nav {
       display: none;
     }
 
@@ -392,7 +426,7 @@ const previews = [roomWarm, dishAncho, chefPlating, roomBarLights, facadeNight];
     grid-template-rows: 1fr auto;
     gap: var(--space-xl) var(--space-2xl);
     min-height: 100%;
-    padding: calc(var(--header-h) + var(--space-xl)) var(--gutter) var(--space-xl);
+    padding: calc(var(--header-h) + var(--space-xl)) max(var(--gutter), (100% - var(--container)) / 2) var(--space-xl);
   }
 
   .site-menu__nav ol {

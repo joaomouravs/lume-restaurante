@@ -132,6 +132,8 @@ const times = ['12h30', '13h00', '13h30', '19h00', '19h30', '20h00', '20h30', '2
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
     align-items: stretch;
+    /* Em telas grandes a "pílula" não estica: três campos de ~260px + botão */
+    max-width: 60rem;
     gap: 0;
     padding: 0.5rem;
     border: 1px solid rgb(243 238 230 / 0.16);

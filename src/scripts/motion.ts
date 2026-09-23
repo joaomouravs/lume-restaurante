@@ -32,7 +32,8 @@ export function initMotion() {
   document.documentElement.classList.add('has-motion');
 
   if (finePointer()) {
-    lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, anchors: { offset: -80 } });
+    // Âncoras: o recuo vem só do scroll-padding-top do CSS (o offset do Lenis somava a ele)
+    lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, anchors: true });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis?.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
