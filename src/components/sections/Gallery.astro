@@ -31,7 +31,7 @@ const items = await Promise.all(
     <ul class="gallery__grid" role="list" data-gallery>
       {
         items.map((item, i) => (
-          <li class:list={['gallery__item', `gallery__item--${item.layout}`]} data-reveal="scale" style={`--i: ${i % 4}`}>
+          <li class:list={['gallery__item', `gallery__item--${item.layout}`, item.mobileLayout && `gallery__item--m-${item.mobileLayout}`]} data-reveal="scale" style={`--i: ${i % 4}`}>
             <button
               type="button"
               class="gallery__btn"
@@ -339,7 +339,8 @@ const items = await Promise.all(
       grid-auto-rows: 42vw;
     }
 
-    .gallery__item--wide {
+    .gallery__item--wide,
+    .gallery__item--m-wide {
       grid-column: span 2;
     }
 

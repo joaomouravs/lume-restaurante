@@ -447,18 +447,21 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
     }
   }
 
-  @media (max-width: 479px) {
-    .hero__actions .btn {
-      flex: 1 1 100%;
-    }
-
+  /* Celular: ação principal em largura total, cardápio logo abaixo */
+  @media (max-width: 639px) {
     .hero__actions {
       flex-direction: column;
       align-items: stretch;
+      gap: var(--space-m);
+    }
+
+    .hero__actions .btn {
+      width: 100%;
+      min-height: 3.5rem;
     }
 
     .hero__actions .link {
-      align-self: flex-start;
+      align-self: center;
     }
   }
 </style>

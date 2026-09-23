@@ -101,7 +101,14 @@ export const testimonials: Testimonial[] = [
   },
 ];
 
-export type GalleryItem = { image: ImageMetadata; alt: string; caption: string; layout: 'tall' | 'wide' | 'square' };
+export type GalleryItem = {
+  image: ImageMetadata;
+  alt: string;
+  caption: string;
+  layout: 'tall' | 'wide' | 'square';
+  /** Formato na grade de 2 colunas do celular, quando diferente (evita vãos) */
+  mobileLayout?: 'wide';
+};
 
 export const gallery: GalleryItem[] = [
   { image: roomWarm, alt: 'Salão principal com luz quente e mesas postas', caption: 'Salão principal', layout: 'tall' },
@@ -112,7 +119,7 @@ export const gallery: GalleryItem[] = [
   { image: wineGrapes, alt: 'Taça de vinho tinto ao lado de cachos de uva', caption: 'Adega', layout: 'square' },
   { image: roomDining, alt: 'Cliente servindo-se à mesa em ambiente de luz baixa', caption: 'À mesa', layout: 'wide' },
   { image: chefKitchen, alt: 'Cozinheiro finalizando pratos na cozinha aberta', caption: 'Cozinha aberta', layout: 'square' },
-  { image: roomBar, alt: 'Balcão de bar com prateleiras de garrafas', caption: 'Balcão', layout: 'square' },
+  { image: roomBar, alt: 'Balcão de bar com prateleiras de garrafas', caption: 'Balcão', layout: 'square', mobileLayout: 'wide' },
   { image: roomTable, alt: 'Prato servido em mesa com taças de cristal', caption: 'Serviço', layout: 'wide' },
 ];
 

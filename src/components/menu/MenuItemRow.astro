@@ -4,6 +4,8 @@
  * Reutilizada na prévia da home e na página de cardápio.
  */
 import { getImage } from 'astro:assets';
+import Media from '@/components/ui/Media.astro';
+import Icon from '@/components/ui/Icon.astro';
 import { dietLabels, formatPrice, type MenuItem } from '@/data/menu';
 
 interface Props {
@@ -26,6 +28,10 @@ const thumb = item.image
   data-cursor-src={thumb?.src}
   data-cursor-cutout={isCutout ? '' : undefined}
 >
+  <div class:list={['menu-row__thumb', { 'is-cutout': isCutout, 'is-empty': !item.image }]} aria-hidden="true">
+    {item.image ? <Media src={item.image} alt="" sizes="64px" widths={[128]} quality={70} /> : <Icon name="flame" size={20} />}
+  </div>
+  <div class="menu-row__body">
   <div class="menu-row__top">
     <Heading class="menu-row__name">
       {item.name}
@@ -36,21 +42,72 @@ const thumb = item.image
   </div>
   <p class="menu-row__desc">{item.description}</p>
   {
-    item.tags && item.tags.length > 0 && (
-      <ul class="menu-row__tags" role="list" aria-label="Informações alimentares">
-        {item.tags.map((t) => (
+    ((item.tags && item.tags.length > 0) || item.signature) && (
+      <ul class="menu-row__tags" role="list" aria-label="Informações do prato">
+        {item.signature && <li class="menu-row__tag-sig" aria-hidden="true">Assinatura</li>}
+        {item.tags?.map((t) => (
           <li>{dietLabels[t].label}</li>
         ))}
       </ul>
     )
   }
+  </div>
 </article>
 
 <style>
   .menu-row {
     display: grid;
-    gap: 0.4rem;
+    gap: 1rem;
     padding-block: 1.25rem;
+  }
+
+  .menu-row__body {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  /* Miniatura do prato: só em telas de toque (no desktop a foto segue o cursor) */
+  .menu-row__thumb {
+    display: none;
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .menu-row:has(.menu-row__thumb) {
+      grid-template-columns: 4rem minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .menu-row__thumb {
+      display: block;
+      width: 4rem;
+      aspect-ratio: 1;
+      margin-top: 0.2rem;
+      overflow: hidden;
+      border-radius: 50%;
+      background: var(--ink-800);
+      box-shadow: 0 10px 20px -12px rgb(20 14 8 / 0.5);
+    }
+
+    .menu-row__thumb.is-cutout {
+      background: transparent;
+    }
+
+    /* Prato sem foto: círculo discreto com a chama da marca, mantendo o alinhamento */
+    .menu-row__thumb.is-empty {
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--color-fg) 6%, transparent);
+      box-shadow: none;
+      color: var(--color-accent);
+    }
+
+    .menu-row__thumb :global(picture),
+    .menu-row__thumb :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   .menu-row__top {
@@ -74,7 +131,7 @@ const thumb = item.image
     border: 1px solid currentColor;
     border-radius: var(--radius-pill);
     font-family: var(--font-sans);
-    font-size: 0.6rem;
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -108,6 +165,33 @@ const thumb = item.image
     flex-wrap: wrap;
     gap: 0.4rem;
     margin: 0.35rem 0 0;
+  }
+
+  /* No celular o selo sai do título (evita quebras) e vira etiqueta */
+  .menu-row__tag-sig {
+    display: none;
+  }
+
+  @media (max-width: 639px) {
+    /* Oculto só visualmente: leitores de tela continuam anunciando "Assinatura" */
+    .menu-row__badge {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .menu-row__tags .menu-row__tag-sig {
+      display: block;
+      border: 1px solid currentColor;
+      background: transparent;
+      color: var(--color-accent);
+    }
   }
 
   .menu-row__tags li {

@@ -6,7 +6,7 @@ import { tastingMenu, formatPrice } from '@/data/menu';
 const [firstWord, ...rest] = tastingMenu.name.split(' ');
 ---
 
-<section id="jornada" class="journey theme-dark texture-ink curve-top overlap-up" aria-labelledby="journey-title">
+<section id="jornada" class="journey theme-dark texture-ink curve-top overlap-up" aria-labelledby="journey-title" data-no-float-cta>
   <div class="journey__pin" data-journey>
     <div class="journey__track" data-journey-track tabindex="0" aria-label="Os sete tempos do Menu Fogo">
       <div class="journey__intro">
@@ -480,8 +480,8 @@ const [firstWord, ...rest] = tastingMenu.name.split(' ');
     }
 
     .journey__progress button {
-      min-width: 2.4rem;
-      height: 2.4rem;
+      min-width: 2.75rem;
+      height: 2.75rem;
       padding-inline: 0.25rem;
     }
   }

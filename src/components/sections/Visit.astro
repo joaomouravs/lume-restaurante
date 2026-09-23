@@ -163,6 +163,19 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
     background-size: 100% 1px;
   }
 
+  @media (pointer: coarse) {
+    .visit__contacts {
+      gap: 0;
+    }
+
+    .visit__contacts a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      background-position: 0 80%;
+    }
+  }
+
   /* Horários */
   .hours {
     margin-top: var(--space-l);

@@ -8,7 +8,7 @@ import heroInterior from '@/assets/images/hero-interior.jpg';
 const times = ['12h30', '13h00', '13h30', '19h00', '19h30', '20h00', '20h30', '21h00', '21h30', '22h00'];
 ---
 
-<section class="reserve-band theme-dark" aria-labelledby="reserve-band-title">
+<section class="reserve-band theme-dark" aria-labelledby="reserve-band-title" data-no-float-cta>
   <div class="reserve-band__bg" aria-hidden="true">
     <Media src={heroInterior} alt="" sizes="100vw" widths={[768, 1280, 1920]} position="50% 65%" />
   </div>
@@ -171,6 +171,7 @@ const times = ['12h30', '13h00', '13h30', '19h00', '19h30', '20h00', '20h30', '2
   .quick-reserve select {
     width: 100%;
     min-width: 0;
+    min-height: 2.75rem;
     padding: 0.35rem 0;
     border: 0;
     background: transparent;
