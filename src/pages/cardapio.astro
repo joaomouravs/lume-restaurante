@@ -8,8 +8,9 @@ import Media from '@/components/ui/Media.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { menu, tastingMenu, dietLabels, formatPrice, type DietTag } from '@/data/menu';
 
-import heroImage from '@/assets/images/dish-ragu.jpg';
-import tastingImage from '@/assets/images/chef-pass-dark.jpg';
+import heroImage from '@/assets/images/page-cardapio-desktop.jpg';
+import heroImageMobile from '@/assets/images/page-cardapio-mobile.jpg';
+import tastingImage from '@/assets/images/tasting-pass.jpg';
 
 // Miniaturas para a foto que acompanha o cursor na lista do Menu Fogo
 const stepThumbs = await Promise.all(
@@ -27,7 +28,13 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
   description="Cardápio da estação do Lume: entradas, pratos na brasa, sobremesas, coquetelaria autoral e o Menu Fogo, nosso menu degustação em sete tempos."
   ogImage={heroImage}
 >
-  <PageHero eyebrow="Menu da estação · Primavera" image={heroImage} imagePosition="50% 55%" breadcrumb="Cardápio">
+  <PageHero
+    eyebrow="Menu da estação · Primavera"
+    image={heroImage}
+    imageMobile={heroImageMobile}
+    imagePosition="80% 50%"
+    breadcrumb="Cardápio"
+  >
     Cardápio
     <p slot="intro">
       Ingredientes de pequenos produtores, técnica precisa e o fogo como assinatura. O menu muda a cada estação — este
@@ -150,7 +157,7 @@ const filters: { id: DietTag | 'all'; label: string }[] = [
           <figure class="tasting__img" data-reveal="clip">
             <Media
               src={tastingImage}
-              alt="Cozinheira finalizando pratos do menu degustação no passe da cozinha"
+              alt="Mãos finalizando com pinça uma fila de pratos do menu degustação no passe da cozinha"
               sizes="(min-width: 1024px) 40vw, 90vw"
               widths={[480, 720, 960, 1200]}
             />

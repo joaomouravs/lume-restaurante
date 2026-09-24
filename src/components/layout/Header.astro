@@ -4,11 +4,11 @@ import Icon from '@/components/ui/Icon.astro';
 import Media from '@/components/ui/Media.astro';
 import { navigation, site } from '@/data/site';
 
-import roomWarm from '@/assets/images/room-warm.jpg';
-import dishAncho from '@/assets/images/dish-ancho.jpg';
-import chefPlating from '@/assets/images/chef-plating.jpg';
-import roomBarLights from '@/assets/images/room-bar-lights.jpg';
-import facadeNight from '@/assets/images/facade-night.jpg';
+import previewCasa from '@/assets/images/gallery-salao.jpg';
+import previewCardapio from '@/assets/images/cover-principais.jpg';
+import previewExperiencias from '@/assets/images/exp-mesa-chef-desktop.jpg';
+import previewGaleria from '@/assets/images/gallery-bar.jpg';
+import previewVisite from '@/assets/images/visit-facade-desktop.jpg';
 
 interface Props {
   /** `split`: hero claro/escuro da home · `dark`: páginas com topo escuro */
@@ -18,7 +18,8 @@ interface Props {
 const { variant = 'dark' } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
-const previews = [roomWarm, dishAncho, chefPlating, roomBarLights, facadeNight];
+// Uma prévia por item do menu (mesma ordem de navigation)
+const previews = [previewCasa, previewCardapio, previewExperiencias, previewGaleria, previewVisite];
 
 // Links visíveis no header a partir de 1280px (abaixo disso, só "Cardápio")
 const quickLinks = navigation.filter((item) => item.label !== 'Galeria');

@@ -3,9 +3,12 @@
  * Imagem otimizada padrão do projeto.
  * Gera AVIF + WebP com srcset responsivo a partir de assets locais.
  * `sizes` deve sempre refletir a largura real ocupada no layout.
+ *
+ * Direção de arte: com `mobileSrc`, telas até `mobileMedia` recebem outra foto
+ * (outro enquadramento), via <source media> — cada aparelho baixa só a sua.
  */
 import type { ImageMetadata } from 'astro';
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 
 interface Props {
   src: ImageMetadata;
@@ -17,6 +20,13 @@ interface Props {
   pictureClass?: string;
   quality?: number;
   position?: string;
+  /** Versão com enquadramento próprio para telas pequenas */
+  mobileSrc?: ImageMetadata;
+  mobileSizes?: string;
+  mobileWidths?: number[];
+  mobilePosition?: string;
+  /** Até onde vale a versão mobile (padrão: celular, até 639px) */
+  mobileMedia?: string;
 }
 
 const {
@@ -29,27 +39,95 @@ const {
   pictureClass,
   quality = 72,
   position,
+  mobileSrc,
+  mobileSizes = '100vw',
+  mobileWidths = [480, 768, 1080],
+  mobilePosition,
+  mobileMedia = '(max-width: 639px)',
 } = Astro.props;
 
-// Nunca gerar variações maiores que o arquivo original
-const safeWidths = widths.filter((w) => w <= src.width);
-if (safeWidths.length === 0) safeWidths.push(src.width);
+// Nunca gerar variações maiores que o arquivo original — mas, se a lista pedia
+// mais do que ele tem, oferece o original inteiro (telas de alta densidade)
+const fit = (list: number[], img: ImageMetadata) => {
+  const safe = list.filter((w) => w <= img.width);
+  if (list.some((w) => w > img.width) && !safe.includes(img.width)) safe.push(img.width);
+  return safe;
+};
+const safeWidths = fit(widths, src);
 
 const isPng = src.format === 'png';
+const formats = ['avif', 'webp'] as const;
+
+let art: null | {
+  mobile: { type: string; srcset: string }[];
+  desktop: { type: string; srcset: string }[];
+  fallback: Awaited<ReturnType<typeof getImage>>;
+} = null;
+
+if (mobileSrc) {
+  const build = (img: ImageMetadata, list: number[]) =>
+    Promise.all(
+      formats.map(async (format) => {
+        const r = await getImage({ src: img, widths: fit(list, img), format, quality });
+        return { type: `image/${format}`, srcset: r.srcSet.attribute };
+      }),
+    );
+  const [mobile, desktop, fallback] = await Promise.all([
+    build(mobileSrc, mobileWidths),
+    build(src, widths),
+    getImage({ src, widths: safeWidths, format: isPng ? 'png' : 'jpg', quality }),
+  ]);
+  art = { mobile, desktop, fallback };
+}
+
+// object-position diferente por versão, via variáveis lidas no CSS global
+const styleVars = [
+  position && `--pos: ${position}`,
+  mobilePosition && `--pos-m: ${mobilePosition}`,
+]
+  .filter(Boolean)
+  .join('; ');
 ---
 
-<Picture
-  src={src}
-  alt={alt}
-  widths={safeWidths}
-  sizes={sizes}
-  formats={['avif', 'webp']}
-  fallbackFormat={isPng ? 'png' : 'jpg'}
-  quality={quality}
-  loading={priority ? 'eager' : 'lazy'}
-  decoding={priority ? 'sync' : 'async'}
-  fetchpriority={priority ? 'high' : 'auto'}
-  class={className}
-  style={position ? `object-position: ${position}` : undefined}
-  pictureAttributes={{ class: pictureClass }}
-/>
+{
+  art ? (
+    <picture class:list={['media-art', pictureClass]}>
+      {art.mobile.map((s) => (
+        <source media={mobileMedia} type={s.type} srcset={s.srcset} sizes={mobileSizes} />
+      ))}
+      {art.desktop.map((s) => (
+        <source type={s.type} srcset={s.srcset} sizes={sizes} />
+      ))}
+      <img
+        src={art.fallback.src}
+        srcset={art.fallback.srcSet.attribute}
+        sizes={sizes}
+        width={src.width}
+        height={src.height}
+        alt={alt}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        class={className}
+        style={styleVars || undefined}
+        data-mobile-media={mobileMedia}
+      />
+    </picture>
+  ) : (
+    <Picture
+      src={src}
+      alt={alt}
+      widths={safeWidths}
+      sizes={sizes}
+      formats={[...formats]}
+      fallbackFormat={isPng ? 'png' : 'jpg'}
+      quality={quality}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding={priority ? 'sync' : 'async'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      class={className}
+      style={position ? `object-position: ${position}` : undefined}
+      pictureAttributes={{ class: pictureClass }}
+    />
+  )
+}
