@@ -49,6 +49,8 @@ import { experiences } from '@/data/content';
             <div class:list={['experiences__img', { 'is-active': i === 0 }]} data-tab-image={exp.id}>
               <Media
                 src={exp.image}
+                mobileSrc={exp.imageMobile}
+                mobileSizes="calc(100vw - 2.5rem)"
                 alt={exp.imageAlt}
                 sizes="(min-width: 1024px) 42vw, 90vw"
                 widths={[480, 720, 960, 1200]}
@@ -265,7 +267,8 @@ import { experiences } from '@/data/content';
     }
   }
 
-  @media (max-width: 559px) {
+  /* Celular: mesmo breakpoint da troca para a foto vertical (Media mobileSrc) */
+  @media (max-width: 639px) {
     .experiences__media {
       aspect-ratio: 4 / 5;
     }

@@ -1,8 +1,10 @@
 ---
 import Media from '@/components/ui/Media.astro';
 
-import chefPortrait from '@/assets/images/chef-tweezers.jpg';
-import chefFlames from '@/assets/images/chef-flames.jpg';
+import chefPortrait from '@/assets/images/chef-portrait-desktop.jpg';
+import chefPortraitMobile from '@/assets/images/chef-portrait-mobile.jpg';
+import chefBanner from '@/assets/images/chef-banner-desktop.jpg';
+import chefBannerMobile from '@/assets/images/chef-banner-mobile.jpg';
 ---
 
 <section id="chef" class="chef theme-dark" aria-labelledby="chef-title">
@@ -10,7 +12,10 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
     <figure class="chef__portrait media-frame" data-reveal="clip">
       <Media
         src={chefPortrait}
-        alt="Chef Rafael Amaral finalizando um prato com pinça sob luminárias de cobre"
+        mobileSrc={chefPortraitMobile}
+        mobileMedia="(max-width: 1023px)"
+        mobileSizes="calc(100vw - 2.5rem)"
+        alt="Chef Rafael Amaral finalizando um prato com pinça no passe, sob luminárias de cobre"
         sizes="(min-width: 1024px) 30vw, 90vw"
         widths={[420, 640, 900, 1200]}
         position="50% 30%"
@@ -45,8 +50,9 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
   <div class="chef__banner">
     <div class="chef__banner-img">
       <Media
-        src={chefFlames}
-        alt="Cozinheiro da brigada flambando uma frigideira em meio a chamas altas"
+        src={chefBanner}
+        mobileSrc={chefBannerMobile}
+        alt="Cozinheiro de avental escuro flambando uma frigideira, com uma coluna alta de chamas"
         sizes="100vw"
         widths={[640, 960, 1280, 1640]}
         position="60% 40%"
@@ -80,10 +86,6 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
     margin: 0;
     aspect-ratio: 4 / 5;
     border-radius: var(--radius-m);
-  }
-
-  .chef__portrait :global(img) {
-    filter: saturate(0.8) sepia(0.14) contrast(1.04) brightness(0.92);
   }
 
   .chef__text {
@@ -240,8 +242,14 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
       aspect-ratio: 16 / 10;
     }
 
+    /* Tablet usa o retrato quadrado (rosto e mãos mais próximos): cabe no 16:10 */
     .chef__portrait :global(img) {
-      object-position: 50% 28% !important;
+      object-position: 50% 42% !important;
+    }
+
+    /* A chama fica no terço esquerdo da foto desktop: sem isso o recorte a cortava */
+    .chef__banner-img :global(img) {
+      object-position: 18% 40% !important;
     }
 
     .chef__words {
@@ -275,11 +283,6 @@ import chefFlames from '@/assets/images/chef-flames.jpg';
       justify-content: center;
       gap: 1rem;
       font-size: 18vw;
-    }
-
-    /* Enquadramento próprio: chamas atrás das palavras, dólmã branco fora do texto */
-    .chef__banner-img :global(img) {
-      object-position: 22% 45% !important;
     }
 
     .chef__words {

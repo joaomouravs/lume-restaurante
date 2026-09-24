@@ -518,6 +518,18 @@ main:focus {
   outline: none;
 }
 
+/* Direção de arte (Media com mobileSrc): enquadramento próprio para cada versão.
+   O breakpoint acompanha o padrão de mobileMedia (max-width: 639px) */
+.media-art img {
+  object-position: var(--pos, 50% 50%);
+}
+
+@media (max-width: 639px) {
+  .media-art img {
+    object-position: var(--pos-m, 50% 50%);
+  }
+}
+
 /* Moldura de imagem com zoom suave */
 .media-frame {
   position: relative;

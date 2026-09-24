@@ -4,8 +4,8 @@ import Icon from '@/components/ui/Icon.astro';
 import { stats } from '@/data/content';
 import { site } from '@/data/site';
 
-import brasaGrill from '@/assets/images/brasa-grill.jpg';
-import tableWine from '@/assets/images/table-wine.jpg';
+import aboutFire from '@/assets/images/about-fire.jpg';
+import aboutTable from '@/assets/images/about-table.jpg';
 ---
 
 <section id="a-casa" class="about section texture-ink theme-dark curve-bottom" aria-labelledby="about-title">
@@ -20,8 +20,8 @@ import tableWine from '@/assets/images/table-wine.jpg';
     <div class="about__body">
       <figure class="about__img about__img--small media-frame" data-reveal="clip">
         <Media
-          src={tableWine}
-          alt="Garrafa de vinho e taças em mesa posta sob luz quente"
+          src={aboutTable}
+          alt="Mesa para dois posta com taças de vinho, pão e vela acesa"
           sizes="(min-width: 1024px) 20vw, 42vw"
           widths={[360, 540, 720]}
         />
@@ -29,8 +29,8 @@ import tableWine from '@/assets/images/table-wine.jpg';
 
       <figure class="about__img about__img--tall media-frame" data-reveal="clip" style="--i: 1">
         <Media
-          src={brasaGrill}
-          alt="Costela assando sobre a grelha, com a brasa viva por baixo"
+          src={aboutFire}
+          alt="Costela assando sobre a grelha de ferro, com a brasa viva e chamas por baixo"
           sizes="(min-width: 1024px) 30vw, 50vw"
           widths={[480, 720, 960, 1200]}
         />

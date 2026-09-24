@@ -18,3 +18,6 @@ Thumbs.db
 
 .vercel
 .env*
+
+# fotos geradas (fonte em PNG, ~115 MB); o site usa as versões JPEG em src/assets/images
+photos/fotos-new/

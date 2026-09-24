@@ -37,13 +37,7 @@ const RECIPE = {
 /** @type {Record<string, Partial<{ brightness: number; vignette: number; saturation: number }>>} */
 const OVERRIDES = {
   'hero-plate.png': { vignette: 0 },
-  'chef-tweezers.jpg': { brightness: 0.95 },
-  'dish-pumpkin.jpg': { brightness: 0.9, vignette: 0.5 },
   'dish-salmon.jpg': { brightness: 0.92 },
-  'table-wine.jpg': { vignette: 0.5 },
-  'room-table.jpg': { brightness: 0.93 },
-  'facade-night.jpg': { saturation: 0.8 },
-  'cacao-bundt.jpg': { brightness: 1.12, vignette: 0.25 },
 };
 
 const vignetteSvg = (w, h, strength) =>

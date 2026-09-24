@@ -8,17 +8,27 @@ import Media from '@/components/ui/Media.astro';
 interface Props {
   eyebrow: string;
   image: ImageMetadata;
+  /** Enquadramento vertical próprio para o celular (assunto no alto, texto embaixo) */
+  imageMobile?: ImageMetadata;
   imagePosition?: string;
   breadcrumb: string;
   compact?: boolean;
 }
 
-const { eyebrow, image, imagePosition = 'center', breadcrumb, compact = false } = Astro.props;
+const { eyebrow, image, imageMobile, imagePosition = 'center', breadcrumb, compact = false } = Astro.props;
 ---
 
 <section class:list={["page-hero theme-dark curve-bottom", { "page-hero--compact": compact }]} aria-labelledby="page-title" data-reveal-group>
   <div class="page-hero__bg" aria-hidden="true">
-    <Media src={image} alt="" sizes="100vw" widths={[768, 1280, 1920]} priority position={imagePosition} />
+    <Media
+      src={image}
+      mobileSrc={imageMobile}
+      alt=""
+      sizes="100vw"
+      widths={[768, 1280, 1920]}
+      priority
+      position={imagePosition}
+    />
   </div>
 
   <div class="container page-hero__inner">
@@ -131,6 +141,16 @@ const { eyebrow, image, imagePosition = 'center', breadcrumb, compact = false } 
   .page-hero__intro {
     margin-top: var(--space-s);
     color: rgb(243 238 230 / 0.78);
+  }
+
+  /* Desktop: o título fica à esquerda e as fotos têm o assunto à direita —
+     véu lateral para o texto não disputar com os pratos/mesa */
+  @media (min-width: 640px) {
+    .page-hero__bg::after {
+      background:
+        linear-gradient(90deg, rgb(11 10 9 / 0.62) 0%, rgb(11 10 9 / 0.35) 38%, rgb(11 10 9 / 0) 62%),
+        linear-gradient(180deg, rgb(11 10 9 / 0.7) 0%, rgb(11 10 9 / 0.35) 40%, rgb(11 10 9 / 0.85) 100%);
+    }
   }
 
   /* No celular o texto cobre quase toda a foto: véu mais denso para leitura */

@@ -3,7 +3,8 @@ import Media from '@/components/ui/Media.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { schedule, site, formatShift } from '@/data/site';
 
-import facadeNight from '@/assets/images/facade-night.jpg';
+import facade from '@/assets/images/visit-facade-desktop.jpg';
+import facadeMobile from '@/assets/images/visit-facade-mobile.jpg';
 
 const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ day, short, shifts })));
 ---
@@ -83,8 +84,11 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, short, shifts }) => ({ 
 
     <div class="visit__map" data-reveal="clip">
       <Media
-        src={facadeNight}
-        alt="Fachada do restaurante à noite, com varanda iluminada e toldos"
+        src={facade}
+        mobileSrc={facadeMobile}
+        mobileMedia="(max-width: 559px)"
+        mobileSizes="calc(100vw - 2.5rem)"
+        alt="Fachada de tijolo do restaurante à noite, com janelas iluminadas, lanternas e árvores da rua"
         sizes="(min-width: 1024px) 45vw, 100vw"
         widths={[480, 720, 960, 1280]}
       />

@@ -6,8 +6,9 @@ import Icon from '@/components/ui/Icon.astro';
 import { schedule, site, formatShift } from '@/data/site';
 import { tastingMenu, formatPrice } from '@/data/menu';
 
-import heroImage from '@/assets/images/room-table.jpg';
-import asideImage from '@/assets/images/drink-negroni.jpg';
+import heroImage from '@/assets/images/page-reservas-desktop.jpg';
+import heroImageMobile from '@/assets/images/page-reservas-mobile.jpg';
+import asideImage from '@/assets/images/gallery-coquetelaria.jpg';
 
 const experienceOptions = [
   { id: 'carta', title: 'À la carte', meta: 'Cardápio da estação', icon: 'leaf' },
@@ -26,7 +27,14 @@ const scheduleJson = JSON.stringify(schedule.map(({ day, shifts }) => ({ day, sh
   ogImage={heroImage}
   floatingCta={false}
 >
-  <PageHero eyebrow="Jantar · Almoço · Experiências" image={heroImage} breadcrumb="Reservas" compact>
+  <PageHero
+    eyebrow="Jantar · Almoço · Experiências"
+    image={heroImage}
+    imageMobile={heroImageMobile}
+    imagePosition="75% 50%"
+    breadcrumb="Reservas"
+    compact
+  >
     Reserve sua <em>mesa</em>
     <p slot="intro">Três passos rápidos. Confirmamos por e-mail e WhatsApp em até duas horas.</p>
   </PageHero>

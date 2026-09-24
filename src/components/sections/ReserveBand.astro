@@ -3,14 +3,22 @@ import Media from '@/components/ui/Media.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { site } from '@/data/site';
 
-import heroInterior from '@/assets/images/hero-interior.jpg';
+import bandImage from '@/assets/images/reserve-band-desktop.jpg';
+import bandImageMobile from '@/assets/images/reserve-band-mobile.jpg';
 
 const times = ['12h30', '13h00', '13h30', '19h00', '19h30', '20h00', '20h30', '21h00', '21h30', '22h00'];
 ---
 
 <section class="reserve-band theme-dark" aria-labelledby="reserve-band-title" data-no-float-cta>
   <div class="reserve-band__bg" aria-hidden="true">
-    <Media src={heroInterior} alt="" sizes="100vw" widths={[768, 1280, 1920]} position="50% 65%" />
+    <Media
+      src={bandImage}
+      mobileSrc={bandImageMobile}
+      alt=""
+      sizes="100vw"
+      widths={[768, 1280, 1920]}
+      position="70% 50%"
+    />
   </div>
 
   <div class="container reserve-band__inner">
