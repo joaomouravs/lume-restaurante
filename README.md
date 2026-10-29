@@ -2,6 +2,16 @@
 
 Site institucional de um restaurante de cozinha contemporânea brasileira, construído com **Astro 7**, CSS com design tokens e TypeScript vanilla. Sem framework de UI: o HTML é gerado de forma estática e o JavaScript só é carregado onde há interação.
 
+**No ar:** https://lume-restaurante-bice.vercel.app
+
+> **English:** a site for a fictional contemporary Brazilian restaurant, built with Astro 7,
+> CSS design tokens and vanilla TypeScript. Pages are static HTML and JavaScript loads only
+> where there is interaction. Opening hours live in one data file that drives the "open now"
+> badge, the hours table, the `Restaurant` JSON-LD and the time slots of a three-step
+> reservation flow with `.ics` export. The producers map is computed at build time from
+> coordinates, every photo goes through one color-grading script, and with
+> `prefers-reduced-motion` the GSAP/Lenis motion is replaced by simple CSS reveals.
+
 ## Como rodar
 
 ```bash
